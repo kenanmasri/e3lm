@@ -1,0 +1,2316 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    AND
+    AVAL
+    COMMENT
+    IMPORT
+    NEWLINE
+    NOT
+    OR
+    STRING_CONTINUE
+    STRING_END
+    STRING_START_SINGLE
+    STRING_START_TRIPLE
+    TERM
+    UNIT
+    WS
+
+Grammar
+
+Rule 0     S' -> master
+Rule 1     master -> master block
+Rule 2     master -> block
+Rule 3     block -> CLSS NAME blockcontent END
+Rule 4     block -> CLSS blockcontent END
+Rule 5     block -> CLSS NAME END
+Rule 6     block -> CLSS END
+Rule 7     blockcontent -> blockcontent attr
+Rule 8     blockcontent -> blockcontent block
+Rule 9     blockcontent -> attr
+Rule 10    blockcontent -> block
+Rule 11    attr -> ATTR expr
+Rule 12    attr -> BODY
+Rule 13    expr -> expr PLUS term
+Rule 14    expr -> expr MINUS term
+Rule 15    expr -> term
+Rule 16    term -> term TIMES factor
+Rule 17    term -> term DIVIDE factor
+Rule 18    term -> term TIMES TIMES factor
+Rule 19    term -> term DIVIDE DIVIDE factor
+Rule 20    term -> factor
+Rule 21    factor -> NUM_INT
+Rule 22    factor -> NUM_FLOAT
+Rule 23    factor -> NUM_HEX
+Rule 24    factor -> NUM_OCT
+Rule 25    factor -> NUM_IMAG
+Rule 26    factor -> NUM_BIN
+Rule 27    factor -> PLUS factor
+Rule 28    factor -> MINUS factor
+Rule 29    factor -> LPAREN expr RPAREN
+Rule 30    factor -> STRING
+Rule 31    factor -> BOOL
+Rule 32    factor -> NONE
+Rule 33    factor -> identifier
+Rule 34    factor -> func
+Rule 35    func -> ID LPAREN funcargs RPAREN
+Rule 36    func -> ID LPAREN RPAREN
+Rule 37    funcargs -> funcargs COMMA expr
+Rule 38    funcargs -> expr
+Rule 39    identifier -> identifier LARRAY expr RARRAY
+Rule 40    identifier -> identifier DOT ID
+Rule 41    identifier -> func
+Rule 42    identifier -> ID
+Rule 43    arraydata -> arraydata COMMA expr
+Rule 44    arraydata -> expr
+Rule 45    factor -> LARRAY arraydata RARRAY
+Rule 46    factor -> LARRAY arraydata COMMA RARRAY
+Rule 47    factor -> LARRAY RARRAY
+Rule 48    dictdata -> dictdata COMMA dictcouple
+Rule 49    dictdata -> dictcouple
+Rule 50    dictcouple -> expr COLON expr
+Rule 51    dict -> LDICT dictdata RDICT
+Rule 52    dict -> LDICT dictdata COMMA RDICT
+Rule 53    dict -> LDICT RDICT
+Rule 54    factor -> dict
+
+Terminals, with rules where they appear
+
+AND                  : 
+ATTR                 : 11
+AVAL                 : 
+BODY                 : 12
+BOOL                 : 31
+CLSS                 : 3 4 5 6
+COLON                : 50
+COMMA                : 37 43 46 48 52
+COMMENT              : 
+DIVIDE               : 17 19 19
+DOT                  : 40
+END                  : 3 4 5 6
+ID                   : 35 36 40 42
+IMPORT               : 
+LARRAY               : 39 45 46 47
+LDICT                : 51 52 53
+LPAREN               : 29 35 36
+MINUS                : 14 28
+NAME                 : 3 5
+NEWLINE              : 
+NONE                 : 32
+NOT                  : 
+NUM_BIN              : 26
+NUM_FLOAT            : 22
+NUM_HEX              : 23
+NUM_IMAG             : 25
+NUM_INT              : 21
+NUM_OCT              : 24
+OR                   : 
+PLUS                 : 13 27
+RARRAY               : 39 45 46 47
+RDICT                : 51 52 53
+RPAREN               : 29 35 36
+STRING               : 30
+STRING_CONTINUE      : 
+STRING_END           : 
+STRING_START_SINGLE  : 
+STRING_START_TRIPLE  : 
+TERM                 : 
+TIMES                : 16 18 18
+UNIT                 : 
+WS                   : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+arraydata            : 43 45 46
+attr                 : 7 9
+block                : 1 2 8 10
+blockcontent         : 3 4 7 8
+dict                 : 54
+dictcouple           : 48 49
+dictdata             : 48 51 52
+expr                 : 11 13 14 29 37 38 39 43 44 50 50
+factor               : 16 17 18 19 20 27 28
+func                 : 34 41
+funcargs             : 35 37
+identifier           : 33 39 40
+master               : 1 0
+term                 : 13 14 15 16 17 18 19
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . master
+    (1) master -> . master block
+    (2) master -> . block
+    (3) block -> . CLSS NAME blockcontent END
+    (4) block -> . CLSS blockcontent END
+    (5) block -> . CLSS NAME END
+    (6) block -> . CLSS END
+
+    CLSS            shift and go to state 3
+
+    master                         shift and go to state 1
+    block                          shift and go to state 2
+
+state 1
+
+    (0) S' -> master .
+    (1) master -> master . block
+    (3) block -> . CLSS NAME blockcontent END
+    (4) block -> . CLSS blockcontent END
+    (5) block -> . CLSS NAME END
+    (6) block -> . CLSS END
+
+    CLSS            shift and go to state 3
+
+    block                          shift and go to state 4
+
+state 2
+
+    (2) master -> block .
+
+    CLSS            reduce using rule 2 (master -> block .)
+    $end            reduce using rule 2 (master -> block .)
+
+
+state 3
+
+    (3) block -> CLSS . NAME blockcontent END
+    (4) block -> CLSS . blockcontent END
+    (5) block -> CLSS . NAME END
+    (6) block -> CLSS . END
+    (7) blockcontent -> . blockcontent attr
+    (8) blockcontent -> . blockcontent block
+    (9) blockcontent -> . attr
+    (10) blockcontent -> . block
+    (11) attr -> . ATTR expr
+    (12) attr -> . BODY
+    (3) block -> . CLSS NAME blockcontent END
+    (4) block -> . CLSS blockcontent END
+    (5) block -> . CLSS NAME END
+    (6) block -> . CLSS END
+
+    NAME            shift and go to state 5
+    END             shift and go to state 7
+    ATTR            shift and go to state 10
+    BODY            shift and go to state 11
+    CLSS            shift and go to state 3
+
+    blockcontent                   shift and go to state 6
+    attr                           shift and go to state 8
+    block                          shift and go to state 9
+
+state 4
+
+    (1) master -> master block .
+
+    CLSS            reduce using rule 1 (master -> master block .)
+    $end            reduce using rule 1 (master -> master block .)
+
+
+state 5
+
+    (3) block -> CLSS NAME . blockcontent END
+    (5) block -> CLSS NAME . END
+    (7) blockcontent -> . blockcontent attr
+    (8) blockcontent -> . blockcontent block
+    (9) blockcontent -> . attr
+    (10) blockcontent -> . block
+    (11) attr -> . ATTR expr
+    (12) attr -> . BODY
+    (3) block -> . CLSS NAME blockcontent END
+    (4) block -> . CLSS blockcontent END
+    (5) block -> . CLSS NAME END
+    (6) block -> . CLSS END
+
+    END             shift and go to state 13
+    ATTR            shift and go to state 10
+    BODY            shift and go to state 11
+    CLSS            shift and go to state 3
+
+    blockcontent                   shift and go to state 12
+    attr                           shift and go to state 8
+    block                          shift and go to state 9
+
+state 6
+
+    (4) block -> CLSS blockcontent . END
+    (7) blockcontent -> blockcontent . attr
+    (8) blockcontent -> blockcontent . block
+    (11) attr -> . ATTR expr
+    (12) attr -> . BODY
+    (3) block -> . CLSS NAME blockcontent END
+    (4) block -> . CLSS blockcontent END
+    (5) block -> . CLSS NAME END
+    (6) block -> . CLSS END
+
+    END             shift and go to state 14
+    ATTR            shift and go to state 10
+    BODY            shift and go to state 11
+    CLSS            shift and go to state 3
+
+    attr                           shift and go to state 15
+    block                          shift and go to state 16
+
+state 7
+
+    (6) block -> CLSS END .
+
+    CLSS            reduce using rule 6 (block -> CLSS END .)
+    $end            reduce using rule 6 (block -> CLSS END .)
+    END             reduce using rule 6 (block -> CLSS END .)
+    ATTR            reduce using rule 6 (block -> CLSS END .)
+    BODY            reduce using rule 6 (block -> CLSS END .)
+
+
+state 8
+
+    (9) blockcontent -> attr .
+
+    END             reduce using rule 9 (blockcontent -> attr .)
+    ATTR            reduce using rule 9 (blockcontent -> attr .)
+    BODY            reduce using rule 9 (blockcontent -> attr .)
+    CLSS            reduce using rule 9 (blockcontent -> attr .)
+
+
+state 9
+
+    (10) blockcontent -> block .
+
+    END             reduce using rule 10 (blockcontent -> block .)
+    ATTR            reduce using rule 10 (blockcontent -> block .)
+    BODY            reduce using rule 10 (blockcontent -> block .)
+    CLSS            reduce using rule 10 (blockcontent -> block .)
+
+
+state 10
+
+    (11) attr -> ATTR . expr
+    (13) expr -> . expr PLUS term
+    (14) expr -> . expr MINUS term
+    (15) expr -> . term
+    (16) term -> . term TIMES factor
+    (17) term -> . term DIVIDE factor
+    (18) term -> . term TIMES TIMES factor
+    (19) term -> . term DIVIDE DIVIDE factor
+    (20) term -> . factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    expr                           shift and go to state 17
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    identifier                     shift and go to state 32
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 11
+
+    (12) attr -> BODY .
+
+    END             reduce using rule 12 (attr -> BODY .)
+    ATTR            reduce using rule 12 (attr -> BODY .)
+    BODY            reduce using rule 12 (attr -> BODY .)
+    CLSS            reduce using rule 12 (attr -> BODY .)
+
+
+state 12
+
+    (3) block -> CLSS NAME blockcontent . END
+    (7) blockcontent -> blockcontent . attr
+    (8) blockcontent -> blockcontent . block
+    (11) attr -> . ATTR expr
+    (12) attr -> . BODY
+    (3) block -> . CLSS NAME blockcontent END
+    (4) block -> . CLSS blockcontent END
+    (5) block -> . CLSS NAME END
+    (6) block -> . CLSS END
+
+    END             shift and go to state 38
+    ATTR            shift and go to state 10
+    BODY            shift and go to state 11
+    CLSS            shift and go to state 3
+
+    attr                           shift and go to state 15
+    block                          shift and go to state 16
+
+state 13
+
+    (5) block -> CLSS NAME END .
+
+    CLSS            reduce using rule 5 (block -> CLSS NAME END .)
+    $end            reduce using rule 5 (block -> CLSS NAME END .)
+    END             reduce using rule 5 (block -> CLSS NAME END .)
+    ATTR            reduce using rule 5 (block -> CLSS NAME END .)
+    BODY            reduce using rule 5 (block -> CLSS NAME END .)
+
+
+state 14
+
+    (4) block -> CLSS blockcontent END .
+
+    CLSS            reduce using rule 4 (block -> CLSS blockcontent END .)
+    $end            reduce using rule 4 (block -> CLSS blockcontent END .)
+    END             reduce using rule 4 (block -> CLSS blockcontent END .)
+    ATTR            reduce using rule 4 (block -> CLSS blockcontent END .)
+    BODY            reduce using rule 4 (block -> CLSS blockcontent END .)
+
+
+state 15
+
+    (7) blockcontent -> blockcontent attr .
+
+    END             reduce using rule 7 (blockcontent -> blockcontent attr .)
+    ATTR            reduce using rule 7 (blockcontent -> blockcontent attr .)
+    BODY            reduce using rule 7 (blockcontent -> blockcontent attr .)
+    CLSS            reduce using rule 7 (blockcontent -> blockcontent attr .)
+
+
+state 16
+
+    (8) blockcontent -> blockcontent block .
+
+    END             reduce using rule 8 (blockcontent -> blockcontent block .)
+    ATTR            reduce using rule 8 (blockcontent -> blockcontent block .)
+    BODY            reduce using rule 8 (blockcontent -> blockcontent block .)
+    CLSS            reduce using rule 8 (blockcontent -> blockcontent block .)
+
+
+state 17
+
+    (11) attr -> ATTR expr .
+    (13) expr -> expr . PLUS term
+    (14) expr -> expr . MINUS term
+
+    END             reduce using rule 11 (attr -> ATTR expr .)
+    ATTR            reduce using rule 11 (attr -> ATTR expr .)
+    BODY            reduce using rule 11 (attr -> ATTR expr .)
+    CLSS            reduce using rule 11 (attr -> ATTR expr .)
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+
+
+state 18
+
+    (27) factor -> PLUS . factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    factor                         shift and go to state 41
+    identifier                     shift and go to state 32
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 19
+
+    (15) expr -> term .
+    (16) term -> term . TIMES factor
+    (17) term -> term . DIVIDE factor
+    (18) term -> term . TIMES TIMES factor
+    (19) term -> term . DIVIDE DIVIDE factor
+
+    PLUS            reduce using rule 15 (expr -> term .)
+    MINUS           reduce using rule 15 (expr -> term .)
+    END             reduce using rule 15 (expr -> term .)
+    ATTR            reduce using rule 15 (expr -> term .)
+    BODY            reduce using rule 15 (expr -> term .)
+    CLSS            reduce using rule 15 (expr -> term .)
+    RPAREN          reduce using rule 15 (expr -> term .)
+    RARRAY          reduce using rule 15 (expr -> term .)
+    COMMA           reduce using rule 15 (expr -> term .)
+    COLON           reduce using rule 15 (expr -> term .)
+    RDICT           reduce using rule 15 (expr -> term .)
+    TIMES           shift and go to state 42
+    DIVIDE          shift and go to state 43
+
+
+state 20
+
+    (28) factor -> MINUS . factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    factor                         shift and go to state 44
+    identifier                     shift and go to state 32
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 21
+
+    (20) term -> factor .
+
+    TIMES           reduce using rule 20 (term -> factor .)
+    DIVIDE          reduce using rule 20 (term -> factor .)
+    PLUS            reduce using rule 20 (term -> factor .)
+    MINUS           reduce using rule 20 (term -> factor .)
+    END             reduce using rule 20 (term -> factor .)
+    ATTR            reduce using rule 20 (term -> factor .)
+    BODY            reduce using rule 20 (term -> factor .)
+    CLSS            reduce using rule 20 (term -> factor .)
+    RPAREN          reduce using rule 20 (term -> factor .)
+    RARRAY          reduce using rule 20 (term -> factor .)
+    COMMA           reduce using rule 20 (term -> factor .)
+    COLON           reduce using rule 20 (term -> factor .)
+    RDICT           reduce using rule 20 (term -> factor .)
+
+
+state 22
+
+    (21) factor -> NUM_INT .
+
+    TIMES           reduce using rule 21 (factor -> NUM_INT .)
+    DIVIDE          reduce using rule 21 (factor -> NUM_INT .)
+    PLUS            reduce using rule 21 (factor -> NUM_INT .)
+    MINUS           reduce using rule 21 (factor -> NUM_INT .)
+    END             reduce using rule 21 (factor -> NUM_INT .)
+    ATTR            reduce using rule 21 (factor -> NUM_INT .)
+    BODY            reduce using rule 21 (factor -> NUM_INT .)
+    CLSS            reduce using rule 21 (factor -> NUM_INT .)
+    RPAREN          reduce using rule 21 (factor -> NUM_INT .)
+    RARRAY          reduce using rule 21 (factor -> NUM_INT .)
+    COMMA           reduce using rule 21 (factor -> NUM_INT .)
+    COLON           reduce using rule 21 (factor -> NUM_INT .)
+    RDICT           reduce using rule 21 (factor -> NUM_INT .)
+
+
+state 23
+
+    (22) factor -> NUM_FLOAT .
+
+    TIMES           reduce using rule 22 (factor -> NUM_FLOAT .)
+    DIVIDE          reduce using rule 22 (factor -> NUM_FLOAT .)
+    PLUS            reduce using rule 22 (factor -> NUM_FLOAT .)
+    MINUS           reduce using rule 22 (factor -> NUM_FLOAT .)
+    END             reduce using rule 22 (factor -> NUM_FLOAT .)
+    ATTR            reduce using rule 22 (factor -> NUM_FLOAT .)
+    BODY            reduce using rule 22 (factor -> NUM_FLOAT .)
+    CLSS            reduce using rule 22 (factor -> NUM_FLOAT .)
+    RPAREN          reduce using rule 22 (factor -> NUM_FLOAT .)
+    RARRAY          reduce using rule 22 (factor -> NUM_FLOAT .)
+    COMMA           reduce using rule 22 (factor -> NUM_FLOAT .)
+    COLON           reduce using rule 22 (factor -> NUM_FLOAT .)
+    RDICT           reduce using rule 22 (factor -> NUM_FLOAT .)
+
+
+state 24
+
+    (23) factor -> NUM_HEX .
+
+    TIMES           reduce using rule 23 (factor -> NUM_HEX .)
+    DIVIDE          reduce using rule 23 (factor -> NUM_HEX .)
+    PLUS            reduce using rule 23 (factor -> NUM_HEX .)
+    MINUS           reduce using rule 23 (factor -> NUM_HEX .)
+    END             reduce using rule 23 (factor -> NUM_HEX .)
+    ATTR            reduce using rule 23 (factor -> NUM_HEX .)
+    BODY            reduce using rule 23 (factor -> NUM_HEX .)
+    CLSS            reduce using rule 23 (factor -> NUM_HEX .)
+    RPAREN          reduce using rule 23 (factor -> NUM_HEX .)
+    RARRAY          reduce using rule 23 (factor -> NUM_HEX .)
+    COMMA           reduce using rule 23 (factor -> NUM_HEX .)
+    COLON           reduce using rule 23 (factor -> NUM_HEX .)
+    RDICT           reduce using rule 23 (factor -> NUM_HEX .)
+
+
+state 25
+
+    (24) factor -> NUM_OCT .
+
+    TIMES           reduce using rule 24 (factor -> NUM_OCT .)
+    DIVIDE          reduce using rule 24 (factor -> NUM_OCT .)
+    PLUS            reduce using rule 24 (factor -> NUM_OCT .)
+    MINUS           reduce using rule 24 (factor -> NUM_OCT .)
+    END             reduce using rule 24 (factor -> NUM_OCT .)
+    ATTR            reduce using rule 24 (factor -> NUM_OCT .)
+    BODY            reduce using rule 24 (factor -> NUM_OCT .)
+    CLSS            reduce using rule 24 (factor -> NUM_OCT .)
+    RPAREN          reduce using rule 24 (factor -> NUM_OCT .)
+    RARRAY          reduce using rule 24 (factor -> NUM_OCT .)
+    COMMA           reduce using rule 24 (factor -> NUM_OCT .)
+    COLON           reduce using rule 24 (factor -> NUM_OCT .)
+    RDICT           reduce using rule 24 (factor -> NUM_OCT .)
+
+
+state 26
+
+    (25) factor -> NUM_IMAG .
+
+    TIMES           reduce using rule 25 (factor -> NUM_IMAG .)
+    DIVIDE          reduce using rule 25 (factor -> NUM_IMAG .)
+    PLUS            reduce using rule 25 (factor -> NUM_IMAG .)
+    MINUS           reduce using rule 25 (factor -> NUM_IMAG .)
+    END             reduce using rule 25 (factor -> NUM_IMAG .)
+    ATTR            reduce using rule 25 (factor -> NUM_IMAG .)
+    BODY            reduce using rule 25 (factor -> NUM_IMAG .)
+    CLSS            reduce using rule 25 (factor -> NUM_IMAG .)
+    RPAREN          reduce using rule 25 (factor -> NUM_IMAG .)
+    RARRAY          reduce using rule 25 (factor -> NUM_IMAG .)
+    COMMA           reduce using rule 25 (factor -> NUM_IMAG .)
+    COLON           reduce using rule 25 (factor -> NUM_IMAG .)
+    RDICT           reduce using rule 25 (factor -> NUM_IMAG .)
+
+
+state 27
+
+    (26) factor -> NUM_BIN .
+
+    TIMES           reduce using rule 26 (factor -> NUM_BIN .)
+    DIVIDE          reduce using rule 26 (factor -> NUM_BIN .)
+    PLUS            reduce using rule 26 (factor -> NUM_BIN .)
+    MINUS           reduce using rule 26 (factor -> NUM_BIN .)
+    END             reduce using rule 26 (factor -> NUM_BIN .)
+    ATTR            reduce using rule 26 (factor -> NUM_BIN .)
+    BODY            reduce using rule 26 (factor -> NUM_BIN .)
+    CLSS            reduce using rule 26 (factor -> NUM_BIN .)
+    RPAREN          reduce using rule 26 (factor -> NUM_BIN .)
+    RARRAY          reduce using rule 26 (factor -> NUM_BIN .)
+    COMMA           reduce using rule 26 (factor -> NUM_BIN .)
+    COLON           reduce using rule 26 (factor -> NUM_BIN .)
+    RDICT           reduce using rule 26 (factor -> NUM_BIN .)
+
+
+state 28
+
+    (29) factor -> LPAREN . expr RPAREN
+    (13) expr -> . expr PLUS term
+    (14) expr -> . expr MINUS term
+    (15) expr -> . term
+    (16) term -> . term TIMES factor
+    (17) term -> . term DIVIDE factor
+    (18) term -> . term TIMES TIMES factor
+    (19) term -> . term DIVIDE DIVIDE factor
+    (20) term -> . factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    expr                           shift and go to state 45
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    identifier                     shift and go to state 32
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 29
+
+    (30) factor -> STRING .
+
+    TIMES           reduce using rule 30 (factor -> STRING .)
+    DIVIDE          reduce using rule 30 (factor -> STRING .)
+    PLUS            reduce using rule 30 (factor -> STRING .)
+    MINUS           reduce using rule 30 (factor -> STRING .)
+    END             reduce using rule 30 (factor -> STRING .)
+    ATTR            reduce using rule 30 (factor -> STRING .)
+    BODY            reduce using rule 30 (factor -> STRING .)
+    CLSS            reduce using rule 30 (factor -> STRING .)
+    RPAREN          reduce using rule 30 (factor -> STRING .)
+    RARRAY          reduce using rule 30 (factor -> STRING .)
+    COMMA           reduce using rule 30 (factor -> STRING .)
+    COLON           reduce using rule 30 (factor -> STRING .)
+    RDICT           reduce using rule 30 (factor -> STRING .)
+
+
+state 30
+
+    (31) factor -> BOOL .
+
+    TIMES           reduce using rule 31 (factor -> BOOL .)
+    DIVIDE          reduce using rule 31 (factor -> BOOL .)
+    PLUS            reduce using rule 31 (factor -> BOOL .)
+    MINUS           reduce using rule 31 (factor -> BOOL .)
+    END             reduce using rule 31 (factor -> BOOL .)
+    ATTR            reduce using rule 31 (factor -> BOOL .)
+    BODY            reduce using rule 31 (factor -> BOOL .)
+    CLSS            reduce using rule 31 (factor -> BOOL .)
+    RPAREN          reduce using rule 31 (factor -> BOOL .)
+    RARRAY          reduce using rule 31 (factor -> BOOL .)
+    COMMA           reduce using rule 31 (factor -> BOOL .)
+    COLON           reduce using rule 31 (factor -> BOOL .)
+    RDICT           reduce using rule 31 (factor -> BOOL .)
+
+
+state 31
+
+    (32) factor -> NONE .
+
+    TIMES           reduce using rule 32 (factor -> NONE .)
+    DIVIDE          reduce using rule 32 (factor -> NONE .)
+    PLUS            reduce using rule 32 (factor -> NONE .)
+    MINUS           reduce using rule 32 (factor -> NONE .)
+    END             reduce using rule 32 (factor -> NONE .)
+    ATTR            reduce using rule 32 (factor -> NONE .)
+    BODY            reduce using rule 32 (factor -> NONE .)
+    CLSS            reduce using rule 32 (factor -> NONE .)
+    RPAREN          reduce using rule 32 (factor -> NONE .)
+    RARRAY          reduce using rule 32 (factor -> NONE .)
+    COMMA           reduce using rule 32 (factor -> NONE .)
+    COLON           reduce using rule 32 (factor -> NONE .)
+    RDICT           reduce using rule 32 (factor -> NONE .)
+
+
+state 32
+
+    (33) factor -> identifier .
+    (39) identifier -> identifier . LARRAY expr RARRAY
+    (40) identifier -> identifier . DOT ID
+
+    TIMES           reduce using rule 33 (factor -> identifier .)
+    DIVIDE          reduce using rule 33 (factor -> identifier .)
+    PLUS            reduce using rule 33 (factor -> identifier .)
+    MINUS           reduce using rule 33 (factor -> identifier .)
+    END             reduce using rule 33 (factor -> identifier .)
+    ATTR            reduce using rule 33 (factor -> identifier .)
+    BODY            reduce using rule 33 (factor -> identifier .)
+    CLSS            reduce using rule 33 (factor -> identifier .)
+    RPAREN          reduce using rule 33 (factor -> identifier .)
+    RARRAY          reduce using rule 33 (factor -> identifier .)
+    COMMA           reduce using rule 33 (factor -> identifier .)
+    COLON           reduce using rule 33 (factor -> identifier .)
+    RDICT           reduce using rule 33 (factor -> identifier .)
+    LARRAY          shift and go to state 46
+    DOT             shift and go to state 47
+
+
+state 33
+
+    (34) factor -> func .
+    (41) identifier -> func .
+
+  ! reduce/reduce conflict for TIMES resolved using rule 34 (factor -> func .)
+  ! reduce/reduce conflict for DIVIDE resolved using rule 34 (factor -> func .)
+  ! reduce/reduce conflict for PLUS resolved using rule 34 (factor -> func .)
+  ! reduce/reduce conflict for MINUS resolved using rule 34 (factor -> func .)
+  ! reduce/reduce conflict for END resolved using rule 34 (factor -> func .)
+  ! reduce/reduce conflict for ATTR resolved using rule 34 (factor -> func .)
+  ! reduce/reduce conflict for BODY resolved using rule 34 (factor -> func .)
+  ! reduce/reduce conflict for CLSS resolved using rule 34 (factor -> func .)
+  ! reduce/reduce conflict for RPAREN resolved using rule 34 (factor -> func .)
+  ! reduce/reduce conflict for RARRAY resolved using rule 34 (factor -> func .)
+  ! reduce/reduce conflict for COMMA resolved using rule 34 (factor -> func .)
+  ! reduce/reduce conflict for COLON resolved using rule 34 (factor -> func .)
+  ! reduce/reduce conflict for RDICT resolved using rule 34 (factor -> func .)
+    TIMES           reduce using rule 34 (factor -> func .)
+    DIVIDE          reduce using rule 34 (factor -> func .)
+    PLUS            reduce using rule 34 (factor -> func .)
+    MINUS           reduce using rule 34 (factor -> func .)
+    END             reduce using rule 34 (factor -> func .)
+    ATTR            reduce using rule 34 (factor -> func .)
+    BODY            reduce using rule 34 (factor -> func .)
+    CLSS            reduce using rule 34 (factor -> func .)
+    RPAREN          reduce using rule 34 (factor -> func .)
+    RARRAY          reduce using rule 34 (factor -> func .)
+    COMMA           reduce using rule 34 (factor -> func .)
+    COLON           reduce using rule 34 (factor -> func .)
+    RDICT           reduce using rule 34 (factor -> func .)
+    LARRAY          reduce using rule 41 (identifier -> func .)
+    DOT             reduce using rule 41 (identifier -> func .)
+
+  ! TIMES           [ reduce using rule 41 (identifier -> func .) ]
+  ! DIVIDE          [ reduce using rule 41 (identifier -> func .) ]
+  ! PLUS            [ reduce using rule 41 (identifier -> func .) ]
+  ! MINUS           [ reduce using rule 41 (identifier -> func .) ]
+  ! END             [ reduce using rule 41 (identifier -> func .) ]
+  ! ATTR            [ reduce using rule 41 (identifier -> func .) ]
+  ! BODY            [ reduce using rule 41 (identifier -> func .) ]
+  ! CLSS            [ reduce using rule 41 (identifier -> func .) ]
+  ! RPAREN          [ reduce using rule 41 (identifier -> func .) ]
+  ! RARRAY          [ reduce using rule 41 (identifier -> func .) ]
+  ! COMMA           [ reduce using rule 41 (identifier -> func .) ]
+  ! COLON           [ reduce using rule 41 (identifier -> func .) ]
+  ! RDICT           [ reduce using rule 41 (identifier -> func .) ]
+
+
+state 34
+
+    (45) factor -> LARRAY . arraydata RARRAY
+    (46) factor -> LARRAY . arraydata COMMA RARRAY
+    (47) factor -> LARRAY . RARRAY
+    (43) arraydata -> . arraydata COMMA expr
+    (44) arraydata -> . expr
+    (13) expr -> . expr PLUS term
+    (14) expr -> . expr MINUS term
+    (15) expr -> . term
+    (16) term -> . term TIMES factor
+    (17) term -> . term DIVIDE factor
+    (18) term -> . term TIMES TIMES factor
+    (19) term -> . term DIVIDE DIVIDE factor
+    (20) term -> . factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    RARRAY          shift and go to state 49
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    arraydata                      shift and go to state 48
+    expr                           shift and go to state 50
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    identifier                     shift and go to state 32
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 35
+
+    (54) factor -> dict .
+
+    TIMES           reduce using rule 54 (factor -> dict .)
+    DIVIDE          reduce using rule 54 (factor -> dict .)
+    PLUS            reduce using rule 54 (factor -> dict .)
+    MINUS           reduce using rule 54 (factor -> dict .)
+    END             reduce using rule 54 (factor -> dict .)
+    ATTR            reduce using rule 54 (factor -> dict .)
+    BODY            reduce using rule 54 (factor -> dict .)
+    CLSS            reduce using rule 54 (factor -> dict .)
+    RPAREN          reduce using rule 54 (factor -> dict .)
+    RARRAY          reduce using rule 54 (factor -> dict .)
+    COMMA           reduce using rule 54 (factor -> dict .)
+    COLON           reduce using rule 54 (factor -> dict .)
+    RDICT           reduce using rule 54 (factor -> dict .)
+
+
+state 36
+
+    (42) identifier -> ID .
+    (35) func -> ID . LPAREN funcargs RPAREN
+    (36) func -> ID . LPAREN RPAREN
+
+    LARRAY          reduce using rule 42 (identifier -> ID .)
+    DOT             reduce using rule 42 (identifier -> ID .)
+    TIMES           reduce using rule 42 (identifier -> ID .)
+    DIVIDE          reduce using rule 42 (identifier -> ID .)
+    PLUS            reduce using rule 42 (identifier -> ID .)
+    MINUS           reduce using rule 42 (identifier -> ID .)
+    END             reduce using rule 42 (identifier -> ID .)
+    ATTR            reduce using rule 42 (identifier -> ID .)
+    BODY            reduce using rule 42 (identifier -> ID .)
+    CLSS            reduce using rule 42 (identifier -> ID .)
+    RPAREN          reduce using rule 42 (identifier -> ID .)
+    RARRAY          reduce using rule 42 (identifier -> ID .)
+    COMMA           reduce using rule 42 (identifier -> ID .)
+    COLON           reduce using rule 42 (identifier -> ID .)
+    RDICT           reduce using rule 42 (identifier -> ID .)
+    LPAREN          shift and go to state 51
+
+
+state 37
+
+    (51) dict -> LDICT . dictdata RDICT
+    (52) dict -> LDICT . dictdata COMMA RDICT
+    (53) dict -> LDICT . RDICT
+    (48) dictdata -> . dictdata COMMA dictcouple
+    (49) dictdata -> . dictcouple
+    (50) dictcouple -> . expr COLON expr
+    (13) expr -> . expr PLUS term
+    (14) expr -> . expr MINUS term
+    (15) expr -> . term
+    (16) term -> . term TIMES factor
+    (17) term -> . term DIVIDE factor
+    (18) term -> . term TIMES TIMES factor
+    (19) term -> . term DIVIDE DIVIDE factor
+    (20) term -> . factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    RDICT           shift and go to state 53
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    dictdata                       shift and go to state 52
+    dictcouple                     shift and go to state 54
+    expr                           shift and go to state 55
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    identifier                     shift and go to state 32
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 38
+
+    (3) block -> CLSS NAME blockcontent END .
+
+    CLSS            reduce using rule 3 (block -> CLSS NAME blockcontent END .)
+    $end            reduce using rule 3 (block -> CLSS NAME blockcontent END .)
+    END             reduce using rule 3 (block -> CLSS NAME blockcontent END .)
+    ATTR            reduce using rule 3 (block -> CLSS NAME blockcontent END .)
+    BODY            reduce using rule 3 (block -> CLSS NAME blockcontent END .)
+
+
+state 39
+
+    (13) expr -> expr PLUS . term
+    (16) term -> . term TIMES factor
+    (17) term -> . term DIVIDE factor
+    (18) term -> . term TIMES TIMES factor
+    (19) term -> . term DIVIDE DIVIDE factor
+    (20) term -> . factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    term                           shift and go to state 56
+    factor                         shift and go to state 21
+    identifier                     shift and go to state 32
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 40
+
+    (14) expr -> expr MINUS . term
+    (16) term -> . term TIMES factor
+    (17) term -> . term DIVIDE factor
+    (18) term -> . term TIMES TIMES factor
+    (19) term -> . term DIVIDE DIVIDE factor
+    (20) term -> . factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    term                           shift and go to state 57
+    factor                         shift and go to state 21
+    identifier                     shift and go to state 32
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 41
+
+    (27) factor -> PLUS factor .
+
+    TIMES           reduce using rule 27 (factor -> PLUS factor .)
+    DIVIDE          reduce using rule 27 (factor -> PLUS factor .)
+    PLUS            reduce using rule 27 (factor -> PLUS factor .)
+    MINUS           reduce using rule 27 (factor -> PLUS factor .)
+    END             reduce using rule 27 (factor -> PLUS factor .)
+    ATTR            reduce using rule 27 (factor -> PLUS factor .)
+    BODY            reduce using rule 27 (factor -> PLUS factor .)
+    CLSS            reduce using rule 27 (factor -> PLUS factor .)
+    RPAREN          reduce using rule 27 (factor -> PLUS factor .)
+    RARRAY          reduce using rule 27 (factor -> PLUS factor .)
+    COMMA           reduce using rule 27 (factor -> PLUS factor .)
+    COLON           reduce using rule 27 (factor -> PLUS factor .)
+    RDICT           reduce using rule 27 (factor -> PLUS factor .)
+
+
+state 42
+
+    (16) term -> term TIMES . factor
+    (18) term -> term TIMES . TIMES factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    TIMES           shift and go to state 58
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    factor                         shift and go to state 59
+    identifier                     shift and go to state 32
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 43
+
+    (17) term -> term DIVIDE . factor
+    (19) term -> term DIVIDE . DIVIDE factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    DIVIDE          shift and go to state 60
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    factor                         shift and go to state 61
+    identifier                     shift and go to state 32
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 44
+
+    (28) factor -> MINUS factor .
+
+    TIMES           reduce using rule 28 (factor -> MINUS factor .)
+    DIVIDE          reduce using rule 28 (factor -> MINUS factor .)
+    PLUS            reduce using rule 28 (factor -> MINUS factor .)
+    MINUS           reduce using rule 28 (factor -> MINUS factor .)
+    END             reduce using rule 28 (factor -> MINUS factor .)
+    ATTR            reduce using rule 28 (factor -> MINUS factor .)
+    BODY            reduce using rule 28 (factor -> MINUS factor .)
+    CLSS            reduce using rule 28 (factor -> MINUS factor .)
+    RPAREN          reduce using rule 28 (factor -> MINUS factor .)
+    RARRAY          reduce using rule 28 (factor -> MINUS factor .)
+    COMMA           reduce using rule 28 (factor -> MINUS factor .)
+    COLON           reduce using rule 28 (factor -> MINUS factor .)
+    RDICT           reduce using rule 28 (factor -> MINUS factor .)
+
+
+state 45
+
+    (29) factor -> LPAREN expr . RPAREN
+    (13) expr -> expr . PLUS term
+    (14) expr -> expr . MINUS term
+
+    RPAREN          shift and go to state 62
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+
+
+state 46
+
+    (39) identifier -> identifier LARRAY . expr RARRAY
+    (13) expr -> . expr PLUS term
+    (14) expr -> . expr MINUS term
+    (15) expr -> . term
+    (16) term -> . term TIMES factor
+    (17) term -> . term DIVIDE factor
+    (18) term -> . term TIMES TIMES factor
+    (19) term -> . term DIVIDE DIVIDE factor
+    (20) term -> . factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    identifier                     shift and go to state 32
+    expr                           shift and go to state 63
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 47
+
+    (40) identifier -> identifier DOT . ID
+
+    ID              shift and go to state 64
+
+
+state 48
+
+    (45) factor -> LARRAY arraydata . RARRAY
+    (46) factor -> LARRAY arraydata . COMMA RARRAY
+    (43) arraydata -> arraydata . COMMA expr
+
+    RARRAY          shift and go to state 65
+    COMMA           shift and go to state 66
+
+
+state 49
+
+    (47) factor -> LARRAY RARRAY .
+
+    TIMES           reduce using rule 47 (factor -> LARRAY RARRAY .)
+    DIVIDE          reduce using rule 47 (factor -> LARRAY RARRAY .)
+    PLUS            reduce using rule 47 (factor -> LARRAY RARRAY .)
+    MINUS           reduce using rule 47 (factor -> LARRAY RARRAY .)
+    END             reduce using rule 47 (factor -> LARRAY RARRAY .)
+    ATTR            reduce using rule 47 (factor -> LARRAY RARRAY .)
+    BODY            reduce using rule 47 (factor -> LARRAY RARRAY .)
+    CLSS            reduce using rule 47 (factor -> LARRAY RARRAY .)
+    RPAREN          reduce using rule 47 (factor -> LARRAY RARRAY .)
+    RARRAY          reduce using rule 47 (factor -> LARRAY RARRAY .)
+    COMMA           reduce using rule 47 (factor -> LARRAY RARRAY .)
+    COLON           reduce using rule 47 (factor -> LARRAY RARRAY .)
+    RDICT           reduce using rule 47 (factor -> LARRAY RARRAY .)
+
+
+state 50
+
+    (44) arraydata -> expr .
+    (13) expr -> expr . PLUS term
+    (14) expr -> expr . MINUS term
+
+    RARRAY          reduce using rule 44 (arraydata -> expr .)
+    COMMA           reduce using rule 44 (arraydata -> expr .)
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+
+
+state 51
+
+    (35) func -> ID LPAREN . funcargs RPAREN
+    (36) func -> ID LPAREN . RPAREN
+    (37) funcargs -> . funcargs COMMA expr
+    (38) funcargs -> . expr
+    (13) expr -> . expr PLUS term
+    (14) expr -> . expr MINUS term
+    (15) expr -> . term
+    (16) term -> . term TIMES factor
+    (17) term -> . term DIVIDE factor
+    (18) term -> . term TIMES TIMES factor
+    (19) term -> . term DIVIDE DIVIDE factor
+    (20) term -> . factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    RPAREN          shift and go to state 68
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    funcargs                       shift and go to state 67
+    expr                           shift and go to state 69
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    identifier                     shift and go to state 32
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 52
+
+    (51) dict -> LDICT dictdata . RDICT
+    (52) dict -> LDICT dictdata . COMMA RDICT
+    (48) dictdata -> dictdata . COMMA dictcouple
+
+    RDICT           shift and go to state 70
+    COMMA           shift and go to state 71
+
+
+state 53
+
+    (53) dict -> LDICT RDICT .
+
+    TIMES           reduce using rule 53 (dict -> LDICT RDICT .)
+    DIVIDE          reduce using rule 53 (dict -> LDICT RDICT .)
+    PLUS            reduce using rule 53 (dict -> LDICT RDICT .)
+    MINUS           reduce using rule 53 (dict -> LDICT RDICT .)
+    END             reduce using rule 53 (dict -> LDICT RDICT .)
+    ATTR            reduce using rule 53 (dict -> LDICT RDICT .)
+    BODY            reduce using rule 53 (dict -> LDICT RDICT .)
+    CLSS            reduce using rule 53 (dict -> LDICT RDICT .)
+    RPAREN          reduce using rule 53 (dict -> LDICT RDICT .)
+    RARRAY          reduce using rule 53 (dict -> LDICT RDICT .)
+    COMMA           reduce using rule 53 (dict -> LDICT RDICT .)
+    COLON           reduce using rule 53 (dict -> LDICT RDICT .)
+    RDICT           reduce using rule 53 (dict -> LDICT RDICT .)
+
+
+state 54
+
+    (49) dictdata -> dictcouple .
+
+    RDICT           reduce using rule 49 (dictdata -> dictcouple .)
+    COMMA           reduce using rule 49 (dictdata -> dictcouple .)
+
+
+state 55
+
+    (50) dictcouple -> expr . COLON expr
+    (13) expr -> expr . PLUS term
+    (14) expr -> expr . MINUS term
+
+    COLON           shift and go to state 72
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+
+
+state 56
+
+    (13) expr -> expr PLUS term .
+    (16) term -> term . TIMES factor
+    (17) term -> term . DIVIDE factor
+    (18) term -> term . TIMES TIMES factor
+    (19) term -> term . DIVIDE DIVIDE factor
+
+    PLUS            reduce using rule 13 (expr -> expr PLUS term .)
+    MINUS           reduce using rule 13 (expr -> expr PLUS term .)
+    END             reduce using rule 13 (expr -> expr PLUS term .)
+    ATTR            reduce using rule 13 (expr -> expr PLUS term .)
+    BODY            reduce using rule 13 (expr -> expr PLUS term .)
+    CLSS            reduce using rule 13 (expr -> expr PLUS term .)
+    RPAREN          reduce using rule 13 (expr -> expr PLUS term .)
+    RARRAY          reduce using rule 13 (expr -> expr PLUS term .)
+    COMMA           reduce using rule 13 (expr -> expr PLUS term .)
+    COLON           reduce using rule 13 (expr -> expr PLUS term .)
+    RDICT           reduce using rule 13 (expr -> expr PLUS term .)
+    TIMES           shift and go to state 42
+    DIVIDE          shift and go to state 43
+
+
+state 57
+
+    (14) expr -> expr MINUS term .
+    (16) term -> term . TIMES factor
+    (17) term -> term . DIVIDE factor
+    (18) term -> term . TIMES TIMES factor
+    (19) term -> term . DIVIDE DIVIDE factor
+
+    PLUS            reduce using rule 14 (expr -> expr MINUS term .)
+    MINUS           reduce using rule 14 (expr -> expr MINUS term .)
+    END             reduce using rule 14 (expr -> expr MINUS term .)
+    ATTR            reduce using rule 14 (expr -> expr MINUS term .)
+    BODY            reduce using rule 14 (expr -> expr MINUS term .)
+    CLSS            reduce using rule 14 (expr -> expr MINUS term .)
+    RPAREN          reduce using rule 14 (expr -> expr MINUS term .)
+    RARRAY          reduce using rule 14 (expr -> expr MINUS term .)
+    COMMA           reduce using rule 14 (expr -> expr MINUS term .)
+    COLON           reduce using rule 14 (expr -> expr MINUS term .)
+    RDICT           reduce using rule 14 (expr -> expr MINUS term .)
+    TIMES           shift and go to state 42
+    DIVIDE          shift and go to state 43
+
+
+state 58
+
+    (18) term -> term TIMES TIMES . factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    factor                         shift and go to state 73
+    identifier                     shift and go to state 32
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 59
+
+    (16) term -> term TIMES factor .
+
+    TIMES           reduce using rule 16 (term -> term TIMES factor .)
+    DIVIDE          reduce using rule 16 (term -> term TIMES factor .)
+    PLUS            reduce using rule 16 (term -> term TIMES factor .)
+    MINUS           reduce using rule 16 (term -> term TIMES factor .)
+    END             reduce using rule 16 (term -> term TIMES factor .)
+    ATTR            reduce using rule 16 (term -> term TIMES factor .)
+    BODY            reduce using rule 16 (term -> term TIMES factor .)
+    CLSS            reduce using rule 16 (term -> term TIMES factor .)
+    RPAREN          reduce using rule 16 (term -> term TIMES factor .)
+    RARRAY          reduce using rule 16 (term -> term TIMES factor .)
+    COMMA           reduce using rule 16 (term -> term TIMES factor .)
+    COLON           reduce using rule 16 (term -> term TIMES factor .)
+    RDICT           reduce using rule 16 (term -> term TIMES factor .)
+
+
+state 60
+
+    (19) term -> term DIVIDE DIVIDE . factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    factor                         shift and go to state 74
+    identifier                     shift and go to state 32
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 61
+
+    (17) term -> term DIVIDE factor .
+
+    TIMES           reduce using rule 17 (term -> term DIVIDE factor .)
+    DIVIDE          reduce using rule 17 (term -> term DIVIDE factor .)
+    PLUS            reduce using rule 17 (term -> term DIVIDE factor .)
+    MINUS           reduce using rule 17 (term -> term DIVIDE factor .)
+    END             reduce using rule 17 (term -> term DIVIDE factor .)
+    ATTR            reduce using rule 17 (term -> term DIVIDE factor .)
+    BODY            reduce using rule 17 (term -> term DIVIDE factor .)
+    CLSS            reduce using rule 17 (term -> term DIVIDE factor .)
+    RPAREN          reduce using rule 17 (term -> term DIVIDE factor .)
+    RARRAY          reduce using rule 17 (term -> term DIVIDE factor .)
+    COMMA           reduce using rule 17 (term -> term DIVIDE factor .)
+    COLON           reduce using rule 17 (term -> term DIVIDE factor .)
+    RDICT           reduce using rule 17 (term -> term DIVIDE factor .)
+
+
+state 62
+
+    (29) factor -> LPAREN expr RPAREN .
+
+    TIMES           reduce using rule 29 (factor -> LPAREN expr RPAREN .)
+    DIVIDE          reduce using rule 29 (factor -> LPAREN expr RPAREN .)
+    PLUS            reduce using rule 29 (factor -> LPAREN expr RPAREN .)
+    MINUS           reduce using rule 29 (factor -> LPAREN expr RPAREN .)
+    END             reduce using rule 29 (factor -> LPAREN expr RPAREN .)
+    ATTR            reduce using rule 29 (factor -> LPAREN expr RPAREN .)
+    BODY            reduce using rule 29 (factor -> LPAREN expr RPAREN .)
+    CLSS            reduce using rule 29 (factor -> LPAREN expr RPAREN .)
+    RPAREN          reduce using rule 29 (factor -> LPAREN expr RPAREN .)
+    RARRAY          reduce using rule 29 (factor -> LPAREN expr RPAREN .)
+    COMMA           reduce using rule 29 (factor -> LPAREN expr RPAREN .)
+    COLON           reduce using rule 29 (factor -> LPAREN expr RPAREN .)
+    RDICT           reduce using rule 29 (factor -> LPAREN expr RPAREN .)
+
+
+state 63
+
+    (39) identifier -> identifier LARRAY expr . RARRAY
+    (13) expr -> expr . PLUS term
+    (14) expr -> expr . MINUS term
+
+    RARRAY          shift and go to state 75
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+
+
+state 64
+
+    (40) identifier -> identifier DOT ID .
+
+    LARRAY          reduce using rule 40 (identifier -> identifier DOT ID .)
+    DOT             reduce using rule 40 (identifier -> identifier DOT ID .)
+    TIMES           reduce using rule 40 (identifier -> identifier DOT ID .)
+    DIVIDE          reduce using rule 40 (identifier -> identifier DOT ID .)
+    PLUS            reduce using rule 40 (identifier -> identifier DOT ID .)
+    MINUS           reduce using rule 40 (identifier -> identifier DOT ID .)
+    END             reduce using rule 40 (identifier -> identifier DOT ID .)
+    ATTR            reduce using rule 40 (identifier -> identifier DOT ID .)
+    BODY            reduce using rule 40 (identifier -> identifier DOT ID .)
+    CLSS            reduce using rule 40 (identifier -> identifier DOT ID .)
+    RPAREN          reduce using rule 40 (identifier -> identifier DOT ID .)
+    RARRAY          reduce using rule 40 (identifier -> identifier DOT ID .)
+    COMMA           reduce using rule 40 (identifier -> identifier DOT ID .)
+    COLON           reduce using rule 40 (identifier -> identifier DOT ID .)
+    RDICT           reduce using rule 40 (identifier -> identifier DOT ID .)
+
+
+state 65
+
+    (45) factor -> LARRAY arraydata RARRAY .
+
+    TIMES           reduce using rule 45 (factor -> LARRAY arraydata RARRAY .)
+    DIVIDE          reduce using rule 45 (factor -> LARRAY arraydata RARRAY .)
+    PLUS            reduce using rule 45 (factor -> LARRAY arraydata RARRAY .)
+    MINUS           reduce using rule 45 (factor -> LARRAY arraydata RARRAY .)
+    END             reduce using rule 45 (factor -> LARRAY arraydata RARRAY .)
+    ATTR            reduce using rule 45 (factor -> LARRAY arraydata RARRAY .)
+    BODY            reduce using rule 45 (factor -> LARRAY arraydata RARRAY .)
+    CLSS            reduce using rule 45 (factor -> LARRAY arraydata RARRAY .)
+    RPAREN          reduce using rule 45 (factor -> LARRAY arraydata RARRAY .)
+    RARRAY          reduce using rule 45 (factor -> LARRAY arraydata RARRAY .)
+    COMMA           reduce using rule 45 (factor -> LARRAY arraydata RARRAY .)
+    COLON           reduce using rule 45 (factor -> LARRAY arraydata RARRAY .)
+    RDICT           reduce using rule 45 (factor -> LARRAY arraydata RARRAY .)
+
+
+state 66
+
+    (46) factor -> LARRAY arraydata COMMA . RARRAY
+    (43) arraydata -> arraydata COMMA . expr
+    (13) expr -> . expr PLUS term
+    (14) expr -> . expr MINUS term
+    (15) expr -> . term
+    (16) term -> . term TIMES factor
+    (17) term -> . term DIVIDE factor
+    (18) term -> . term TIMES TIMES factor
+    (19) term -> . term DIVIDE DIVIDE factor
+    (20) term -> . factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    RARRAY          shift and go to state 76
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    expr                           shift and go to state 77
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    identifier                     shift and go to state 32
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 67
+
+    (35) func -> ID LPAREN funcargs . RPAREN
+    (37) funcargs -> funcargs . COMMA expr
+
+    RPAREN          shift and go to state 78
+    COMMA           shift and go to state 79
+
+
+state 68
+
+    (36) func -> ID LPAREN RPAREN .
+
+    TIMES           reduce using rule 36 (func -> ID LPAREN RPAREN .)
+    DIVIDE          reduce using rule 36 (func -> ID LPAREN RPAREN .)
+    PLUS            reduce using rule 36 (func -> ID LPAREN RPAREN .)
+    MINUS           reduce using rule 36 (func -> ID LPAREN RPAREN .)
+    END             reduce using rule 36 (func -> ID LPAREN RPAREN .)
+    ATTR            reduce using rule 36 (func -> ID LPAREN RPAREN .)
+    BODY            reduce using rule 36 (func -> ID LPAREN RPAREN .)
+    CLSS            reduce using rule 36 (func -> ID LPAREN RPAREN .)
+    LARRAY          reduce using rule 36 (func -> ID LPAREN RPAREN .)
+    DOT             reduce using rule 36 (func -> ID LPAREN RPAREN .)
+    RPAREN          reduce using rule 36 (func -> ID LPAREN RPAREN .)
+    RARRAY          reduce using rule 36 (func -> ID LPAREN RPAREN .)
+    COMMA           reduce using rule 36 (func -> ID LPAREN RPAREN .)
+    COLON           reduce using rule 36 (func -> ID LPAREN RPAREN .)
+    RDICT           reduce using rule 36 (func -> ID LPAREN RPAREN .)
+
+
+state 69
+
+    (38) funcargs -> expr .
+    (13) expr -> expr . PLUS term
+    (14) expr -> expr . MINUS term
+
+    RPAREN          reduce using rule 38 (funcargs -> expr .)
+    COMMA           reduce using rule 38 (funcargs -> expr .)
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+
+
+state 70
+
+    (51) dict -> LDICT dictdata RDICT .
+
+    TIMES           reduce using rule 51 (dict -> LDICT dictdata RDICT .)
+    DIVIDE          reduce using rule 51 (dict -> LDICT dictdata RDICT .)
+    PLUS            reduce using rule 51 (dict -> LDICT dictdata RDICT .)
+    MINUS           reduce using rule 51 (dict -> LDICT dictdata RDICT .)
+    END             reduce using rule 51 (dict -> LDICT dictdata RDICT .)
+    ATTR            reduce using rule 51 (dict -> LDICT dictdata RDICT .)
+    BODY            reduce using rule 51 (dict -> LDICT dictdata RDICT .)
+    CLSS            reduce using rule 51 (dict -> LDICT dictdata RDICT .)
+    RPAREN          reduce using rule 51 (dict -> LDICT dictdata RDICT .)
+    RARRAY          reduce using rule 51 (dict -> LDICT dictdata RDICT .)
+    COMMA           reduce using rule 51 (dict -> LDICT dictdata RDICT .)
+    COLON           reduce using rule 51 (dict -> LDICT dictdata RDICT .)
+    RDICT           reduce using rule 51 (dict -> LDICT dictdata RDICT .)
+
+
+state 71
+
+    (52) dict -> LDICT dictdata COMMA . RDICT
+    (48) dictdata -> dictdata COMMA . dictcouple
+    (50) dictcouple -> . expr COLON expr
+    (13) expr -> . expr PLUS term
+    (14) expr -> . expr MINUS term
+    (15) expr -> . term
+    (16) term -> . term TIMES factor
+    (17) term -> . term DIVIDE factor
+    (18) term -> . term TIMES TIMES factor
+    (19) term -> . term DIVIDE DIVIDE factor
+    (20) term -> . factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    RDICT           shift and go to state 80
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    dictcouple                     shift and go to state 81
+    expr                           shift and go to state 55
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    identifier                     shift and go to state 32
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 72
+
+    (50) dictcouple -> expr COLON . expr
+    (13) expr -> . expr PLUS term
+    (14) expr -> . expr MINUS term
+    (15) expr -> . term
+    (16) term -> . term TIMES factor
+    (17) term -> . term DIVIDE factor
+    (18) term -> . term TIMES TIMES factor
+    (19) term -> . term DIVIDE DIVIDE factor
+    (20) term -> . factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    expr                           shift and go to state 82
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    identifier                     shift and go to state 32
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 73
+
+    (18) term -> term TIMES TIMES factor .
+
+    TIMES           reduce using rule 18 (term -> term TIMES TIMES factor .)
+    DIVIDE          reduce using rule 18 (term -> term TIMES TIMES factor .)
+    PLUS            reduce using rule 18 (term -> term TIMES TIMES factor .)
+    MINUS           reduce using rule 18 (term -> term TIMES TIMES factor .)
+    END             reduce using rule 18 (term -> term TIMES TIMES factor .)
+    ATTR            reduce using rule 18 (term -> term TIMES TIMES factor .)
+    BODY            reduce using rule 18 (term -> term TIMES TIMES factor .)
+    CLSS            reduce using rule 18 (term -> term TIMES TIMES factor .)
+    RPAREN          reduce using rule 18 (term -> term TIMES TIMES factor .)
+    RARRAY          reduce using rule 18 (term -> term TIMES TIMES factor .)
+    COMMA           reduce using rule 18 (term -> term TIMES TIMES factor .)
+    COLON           reduce using rule 18 (term -> term TIMES TIMES factor .)
+    RDICT           reduce using rule 18 (term -> term TIMES TIMES factor .)
+
+
+state 74
+
+    (19) term -> term DIVIDE DIVIDE factor .
+
+    TIMES           reduce using rule 19 (term -> term DIVIDE DIVIDE factor .)
+    DIVIDE          reduce using rule 19 (term -> term DIVIDE DIVIDE factor .)
+    PLUS            reduce using rule 19 (term -> term DIVIDE DIVIDE factor .)
+    MINUS           reduce using rule 19 (term -> term DIVIDE DIVIDE factor .)
+    END             reduce using rule 19 (term -> term DIVIDE DIVIDE factor .)
+    ATTR            reduce using rule 19 (term -> term DIVIDE DIVIDE factor .)
+    BODY            reduce using rule 19 (term -> term DIVIDE DIVIDE factor .)
+    CLSS            reduce using rule 19 (term -> term DIVIDE DIVIDE factor .)
+    RPAREN          reduce using rule 19 (term -> term DIVIDE DIVIDE factor .)
+    RARRAY          reduce using rule 19 (term -> term DIVIDE DIVIDE factor .)
+    COMMA           reduce using rule 19 (term -> term DIVIDE DIVIDE factor .)
+    COLON           reduce using rule 19 (term -> term DIVIDE DIVIDE factor .)
+    RDICT           reduce using rule 19 (term -> term DIVIDE DIVIDE factor .)
+
+
+state 75
+
+    (39) identifier -> identifier LARRAY expr RARRAY .
+
+    LARRAY          reduce using rule 39 (identifier -> identifier LARRAY expr RARRAY .)
+    DOT             reduce using rule 39 (identifier -> identifier LARRAY expr RARRAY .)
+    TIMES           reduce using rule 39 (identifier -> identifier LARRAY expr RARRAY .)
+    DIVIDE          reduce using rule 39 (identifier -> identifier LARRAY expr RARRAY .)
+    PLUS            reduce using rule 39 (identifier -> identifier LARRAY expr RARRAY .)
+    MINUS           reduce using rule 39 (identifier -> identifier LARRAY expr RARRAY .)
+    END             reduce using rule 39 (identifier -> identifier LARRAY expr RARRAY .)
+    ATTR            reduce using rule 39 (identifier -> identifier LARRAY expr RARRAY .)
+    BODY            reduce using rule 39 (identifier -> identifier LARRAY expr RARRAY .)
+    CLSS            reduce using rule 39 (identifier -> identifier LARRAY expr RARRAY .)
+    RPAREN          reduce using rule 39 (identifier -> identifier LARRAY expr RARRAY .)
+    RARRAY          reduce using rule 39 (identifier -> identifier LARRAY expr RARRAY .)
+    COMMA           reduce using rule 39 (identifier -> identifier LARRAY expr RARRAY .)
+    COLON           reduce using rule 39 (identifier -> identifier LARRAY expr RARRAY .)
+    RDICT           reduce using rule 39 (identifier -> identifier LARRAY expr RARRAY .)
+
+
+state 76
+
+    (46) factor -> LARRAY arraydata COMMA RARRAY .
+
+    TIMES           reduce using rule 46 (factor -> LARRAY arraydata COMMA RARRAY .)
+    DIVIDE          reduce using rule 46 (factor -> LARRAY arraydata COMMA RARRAY .)
+    PLUS            reduce using rule 46 (factor -> LARRAY arraydata COMMA RARRAY .)
+    MINUS           reduce using rule 46 (factor -> LARRAY arraydata COMMA RARRAY .)
+    END             reduce using rule 46 (factor -> LARRAY arraydata COMMA RARRAY .)
+    ATTR            reduce using rule 46 (factor -> LARRAY arraydata COMMA RARRAY .)
+    BODY            reduce using rule 46 (factor -> LARRAY arraydata COMMA RARRAY .)
+    CLSS            reduce using rule 46 (factor -> LARRAY arraydata COMMA RARRAY .)
+    RPAREN          reduce using rule 46 (factor -> LARRAY arraydata COMMA RARRAY .)
+    RARRAY          reduce using rule 46 (factor -> LARRAY arraydata COMMA RARRAY .)
+    COMMA           reduce using rule 46 (factor -> LARRAY arraydata COMMA RARRAY .)
+    COLON           reduce using rule 46 (factor -> LARRAY arraydata COMMA RARRAY .)
+    RDICT           reduce using rule 46 (factor -> LARRAY arraydata COMMA RARRAY .)
+
+
+state 77
+
+    (43) arraydata -> arraydata COMMA expr .
+    (13) expr -> expr . PLUS term
+    (14) expr -> expr . MINUS term
+
+    RARRAY          reduce using rule 43 (arraydata -> arraydata COMMA expr .)
+    COMMA           reduce using rule 43 (arraydata -> arraydata COMMA expr .)
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+
+
+state 78
+
+    (35) func -> ID LPAREN funcargs RPAREN .
+
+    TIMES           reduce using rule 35 (func -> ID LPAREN funcargs RPAREN .)
+    DIVIDE          reduce using rule 35 (func -> ID LPAREN funcargs RPAREN .)
+    PLUS            reduce using rule 35 (func -> ID LPAREN funcargs RPAREN .)
+    MINUS           reduce using rule 35 (func -> ID LPAREN funcargs RPAREN .)
+    END             reduce using rule 35 (func -> ID LPAREN funcargs RPAREN .)
+    ATTR            reduce using rule 35 (func -> ID LPAREN funcargs RPAREN .)
+    BODY            reduce using rule 35 (func -> ID LPAREN funcargs RPAREN .)
+    CLSS            reduce using rule 35 (func -> ID LPAREN funcargs RPAREN .)
+    LARRAY          reduce using rule 35 (func -> ID LPAREN funcargs RPAREN .)
+    DOT             reduce using rule 35 (func -> ID LPAREN funcargs RPAREN .)
+    RPAREN          reduce using rule 35 (func -> ID LPAREN funcargs RPAREN .)
+    RARRAY          reduce using rule 35 (func -> ID LPAREN funcargs RPAREN .)
+    COMMA           reduce using rule 35 (func -> ID LPAREN funcargs RPAREN .)
+    COLON           reduce using rule 35 (func -> ID LPAREN funcargs RPAREN .)
+    RDICT           reduce using rule 35 (func -> ID LPAREN funcargs RPAREN .)
+
+
+state 79
+
+    (37) funcargs -> funcargs COMMA . expr
+    (13) expr -> . expr PLUS term
+    (14) expr -> . expr MINUS term
+    (15) expr -> . term
+    (16) term -> . term TIMES factor
+    (17) term -> . term DIVIDE factor
+    (18) term -> . term TIMES TIMES factor
+    (19) term -> . term DIVIDE DIVIDE factor
+    (20) term -> . factor
+    (21) factor -> . NUM_INT
+    (22) factor -> . NUM_FLOAT
+    (23) factor -> . NUM_HEX
+    (24) factor -> . NUM_OCT
+    (25) factor -> . NUM_IMAG
+    (26) factor -> . NUM_BIN
+    (27) factor -> . PLUS factor
+    (28) factor -> . MINUS factor
+    (29) factor -> . LPAREN expr RPAREN
+    (30) factor -> . STRING
+    (31) factor -> . BOOL
+    (32) factor -> . NONE
+    (33) factor -> . identifier
+    (34) factor -> . func
+    (45) factor -> . LARRAY arraydata RARRAY
+    (46) factor -> . LARRAY arraydata COMMA RARRAY
+    (47) factor -> . LARRAY RARRAY
+    (54) factor -> . dict
+    (39) identifier -> . identifier LARRAY expr RARRAY
+    (40) identifier -> . identifier DOT ID
+    (41) identifier -> . func
+    (42) identifier -> . ID
+    (35) func -> . ID LPAREN funcargs RPAREN
+    (36) func -> . ID LPAREN RPAREN
+    (51) dict -> . LDICT dictdata RDICT
+    (52) dict -> . LDICT dictdata COMMA RDICT
+    (53) dict -> . LDICT RDICT
+
+    NUM_INT         shift and go to state 22
+    NUM_FLOAT       shift and go to state 23
+    NUM_HEX         shift and go to state 24
+    NUM_OCT         shift and go to state 25
+    NUM_IMAG        shift and go to state 26
+    NUM_BIN         shift and go to state 27
+    PLUS            shift and go to state 18
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 28
+    STRING          shift and go to state 29
+    BOOL            shift and go to state 30
+    NONE            shift and go to state 31
+    LARRAY          shift and go to state 34
+    ID              shift and go to state 36
+    LDICT           shift and go to state 37
+
+    expr                           shift and go to state 83
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    identifier                     shift and go to state 32
+    func                           shift and go to state 33
+    dict                           shift and go to state 35
+
+state 80
+
+    (52) dict -> LDICT dictdata COMMA RDICT .
+
+    TIMES           reduce using rule 52 (dict -> LDICT dictdata COMMA RDICT .)
+    DIVIDE          reduce using rule 52 (dict -> LDICT dictdata COMMA RDICT .)
+    PLUS            reduce using rule 52 (dict -> LDICT dictdata COMMA RDICT .)
+    MINUS           reduce using rule 52 (dict -> LDICT dictdata COMMA RDICT .)
+    END             reduce using rule 52 (dict -> LDICT dictdata COMMA RDICT .)
+    ATTR            reduce using rule 52 (dict -> LDICT dictdata COMMA RDICT .)
+    BODY            reduce using rule 52 (dict -> LDICT dictdata COMMA RDICT .)
+    CLSS            reduce using rule 52 (dict -> LDICT dictdata COMMA RDICT .)
+    RPAREN          reduce using rule 52 (dict -> LDICT dictdata COMMA RDICT .)
+    RARRAY          reduce using rule 52 (dict -> LDICT dictdata COMMA RDICT .)
+    COMMA           reduce using rule 52 (dict -> LDICT dictdata COMMA RDICT .)
+    COLON           reduce using rule 52 (dict -> LDICT dictdata COMMA RDICT .)
+    RDICT           reduce using rule 52 (dict -> LDICT dictdata COMMA RDICT .)
+
+
+state 81
+
+    (48) dictdata -> dictdata COMMA dictcouple .
+
+    RDICT           reduce using rule 48 (dictdata -> dictdata COMMA dictcouple .)
+    COMMA           reduce using rule 48 (dictdata -> dictdata COMMA dictcouple .)
+
+
+state 82
+
+    (50) dictcouple -> expr COLON expr .
+    (13) expr -> expr . PLUS term
+    (14) expr -> expr . MINUS term
+
+    RDICT           reduce using rule 50 (dictcouple -> expr COLON expr .)
+    COMMA           reduce using rule 50 (dictcouple -> expr COLON expr .)
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+
+
+state 83
+
+    (37) funcargs -> funcargs COMMA expr .
+    (13) expr -> expr . PLUS term
+    (14) expr -> expr . MINUS term
+
+    RPAREN          reduce using rule 37 (funcargs -> funcargs COMMA expr .)
+    COMMA           reduce using rule 37 (funcargs -> funcargs COMMA expr .)
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: reduce/reduce conflict in state 33 resolved using rule (factor -> func)
+WARNING: rejected rule (identifier -> func) in state 33

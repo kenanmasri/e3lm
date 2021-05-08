@@ -1,0 +1,101 @@
+Universe
+    Life 0
+    End
+    Life 1
+        Knno Baal
+            KM = KnM
+            KnM = KenMa
+            KenMa = KenaMas
+            KenaMas = KenanMasr
+            Kenanmasr = KenanmasrI
+            Kenanmasri = KenanmasrI
+            I = 1
+            l = L
+            L = Le
+            Le = Let
+            LeT = LetT
+            LetT = LettE
+            LettE = LetteR
+            LetteR = LetterS
+            LetterS = Letters
+            Letters
+                0 = I
+                1 = L
+                2 = M
+                3 = N
+                4 = O
+                5 = P
+                6 = E
+                7 = Q
+                8 = R
+                9 = S
+            End
+            NU = Nu
+            Nu = NeW
+            NeW = New
+            New = Numbers
+            Ara = AraB
+            AraB = arabC
+            arabC = arabiC
+            arabiC = arabic
+            arabic letters
+                0 = ا
+                1 = ل
+                2 = م
+                3 = ى
+                4 = خ
+                5 = ح
+                6 = ث
+                7 = ض
+                8 = ق
+                9 = س
+                A = آ
+                a = ع
+                l = ل
+                c = س
+                h = أ
+                a = ق
+                n = ى
+                B = لا
+                b = لآ
+                K = ̅أ
+                k = كـ
+                n = ن
+                kn = 'كـ
+                Kenan = ¯/كـ'ا'ـ
+                ken = كنـ
+                kenanmasri = ¬كـ'ا'ـ
+                KenanMasr = ɵ
+                KenanmasrI = ɸ
+            End
+            D = dI
+            dI = di
+            di = diG
+            diG = digI
+            digI = digiT
+            digiT = digitS
+            digits S
+                A = 1
+                B = 2
+                C = 3
+                D = 4
+                E = 5
+                F = 6
+            End
+            digits B
+                1 = K
+                2 = KM
+            End
+            digits H
+                1 = K
+                2 = n
+                3 = n
+                4 = O
+                5 = B
+                6 = a
+                7 = a
+                8 = l
+            End
+        6uس
+    End
+End

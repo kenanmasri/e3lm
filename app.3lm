@@ -1,0 +1,8 @@
+Dummy alaa
+    attr0 = alaa2.attr5
+    attr5 = 5
+End
+Dummy alaa2
+    attr0 = alaa.attr5
+    attr5 = 51
+End
