@@ -6,34 +6,37 @@ to the main program, containing the text that can be used to generate
 a dot graph with `graphviz` package.
 """
 import textwrap
+from graphviz import Digraph
 from copy import deepcopy
 from e3lm.lang import ast
 from e3lm.lang.interpreters import E3lmPlugin
 from e3lm.lang.data import basic_dt
 
 
-class DotPlugin(E3lmPlugin):
+class ObsoleteDotPlugin(E3lmPlugin):
     """An E3lm interpreter plugin used to provide a `dot` attribute to the main
     program, containing the text that can be used to generate a dot graph with
     `graphviz` package."""
     PROGRAM = {
-        "shape": "egg",
-        "fillcolor": "orange",
-        "color": "black",
+        "shape": "diamond",
+        "fillcolor": "#000000A0",
+        "fontcolor": "#d300d3",
+        "color": "#d38400",
         "style": "filled",
         "label": "AST",
     }
     BLOCK = {
-        "shape": "egg",
-        "fillcolor": "orange",
-        "color": "orange",
+        "shape": "square",
+        "fillcolor": "#d3840050",
+        "fontcolor": "#7e0e7e",
+        "color": "#d38400",
         "style": "filled",
         "label": "Block",
     }
     AST = {
         "shape": "circle",
         "fillcolor": "pink",
-        "color": "black",
+        "color": "white",
         "style": "filled",
         "label": "AST",
     }
@@ -267,9 +270,10 @@ class ParseTreeVisualizer(object):
         self.ncount = 1
         self.dot_header = [textwrap.dedent("""\
         digraph astgraph {
-          node [shape=egg, fontsize=13, fontname="Arial", height=.2];
-          ranksep=1;
-          edge [arrowsize=.5]
+          graph [bgcolor="#22222222"];
+          node [font="Arial", fontcolor="white", shape=egg, fontsize=13, fontname="Arial", height=.2];
+          ranksep=1; rankdir=LR
+          edge [color="#666666",arrowsize=.5]
         """)]
         self.dot_body = []
         self.dot_footer = ['}']
@@ -298,8 +302,8 @@ class ParseTreeVisualizer(object):
             self.ncount += 1
             num = str_node.dot["id"]
             s, str_node.children = self.get_dot_data(str_node, num, {
-                "color": "black",
-                "fillcolor": "white",
+                "color": "white",
+                "fillcolor": "black",
             })
             del str_node
 
@@ -331,14 +335,14 @@ color={},style={},label="{}"]\n'.format(
             if hasattr(parent, "target"):
                 n = parent.target
                 if not parent.dot["id"] == n.dot["id"]:
-                    col = "red"
-                    s = '  node{} -> node{} [color={}]\n'.format(
+                    col = "#990000"
+                    s = '  node{} -> node{} [color="{}"]\n'.format(
                         parent.dot["id"], n.dot["id"], col
                     )
             else:
                 if not parent.dot["id"] == num:
-                    col = "black"
-                    s = '  node{} -> node{} [color={}]\n'.format(
+                    col = "#999999"
+                    s = '  node{} -> node{} [color="{}"]\n'.format(
                         parent.dot["id"], num, col
                     )
             self.dot_body.append(s)
@@ -396,7 +400,7 @@ color={},style={},label="{}"]\n'.format(
                 dot["label"] = "\\r".join(dot["label"].splitlines()) + "\\r"
 
         q = "\"" if not dot["label"].startswith("<") else ""
-        s = ' node{} [shape={},fillcolor={},color={},style={},label={}]\n'
+        s = ' node{} [shape="{}",fillcolor="{}",color="{}",style="{}",label={}]\n'
         s = s.format(num,
                      dot["shape"], dot["fillcolor"], dot["color"], dot["style"],
                      q + dot["label"] + q
@@ -408,3 +412,269 @@ color={},style={},label="{}"]\n'.format(
                 color=dot["color"], style=dot["style"], label=dot["label"],
             )
         return s
+
+
+class DotPlugin(E3lmPlugin):
+    """An E3lm interpreter plugin used to provide a `dot` attribute to the main
+    program, containing the text that can be used to generate a dot graph with
+    `graphviz` package."""
+
+    RANKDIR = "TB"
+    SIZE = '6,9'
+
+    NODES = {
+        "Program": {
+            "shape": "diamond",
+            "fillcolor": "#000000A0",
+            "fontcolor": "#d300d3",
+            "color": "#d38400",
+            "style": "filled",
+            "label": "Program",
+        },
+        "Block": {
+            "shape": "square",
+            "fillcolor": "#d3840050",
+            "fontcolor": "#7e0e7e",
+            "color": "#d38400",
+            "style": "filled",
+            "label": "Block",
+        },
+        "AST": {
+            "shape": "circle",
+            "fillcolor": "pink",
+            "color": "white",
+            "style": "filled",
+            "label": "AST",
+        },
+        "Attr": {
+            "shape": "rect",
+            "fillcolor": "##d3840050",
+            "fontcolor": "#d384a0",
+            "color": "#d38400",
+            "style": "filled",
+            "label": "Attr",
+        },
+        "Expr": {
+            "shape": "rect",
+            "fillcolor": "#7e0e7e50",
+            "color": "#7e0e7e",
+            "fontcolor": "white",
+            "style": "filled",
+            "label": "<>"
+        },
+        "Func": {
+            "shape": "circle",
+            "fillcolor": "pink",
+            "color": "pink",
+            "style": "filled",
+            "label": "Function",
+        },
+    }
+
+    CLUSTERS = {
+        "default": {
+        },
+        "evaluated": {
+            "attrs": {
+                "style": "filled",
+                "color": "blue",
+                "label": "EVAL",
+            },
+            "node_attrs": {
+                "style": "filled",
+                "color": "blue",
+                "fontcolor": "#167cd6",
+            },
+        }
+    }
+
+    CLUSTER_DEFAULT = 0
+    CLUSTER_EVAL = 1
+
+    def __init__(self, **kwargs):
+        self.options = kwargs
+        self._ids = 0
+        self.g = g = Digraph('G')
+        self.g.attr('graph', bgcolor="#22222222")
+        self.g.attr('node', fontname="Arial", fontcolor="white", shape="rect",
+                    fontsize="13", height=".3", ranksep="1", rankdir=self.RANKDIR)
+        self.g.attr('edge', color="#666666", arrowsize=".6")
+
+        self.clusters = []
+        for k, cluster in self.CLUSTERS.items():
+            with self.g.subgraph(name=k) as c:
+                if "attrs" in cluster.keys():
+                    c.attr(**cluster["attrs"])
+                if "node_attrs" in cluster.keys():
+                    c.node_attr.update(**cluster["node_attrs"])
+            self.clusters.append(c)
+        return self.generate()
+
+    def id(self):
+        self._ids += 1
+        return self._ids - 1
+
+    def interpret(self, program):
+        self.program = program
+        self.dot = self.visit(program)
+        return self.program
+
+    def visit(self, node):
+        result = super().visit(node)
+        if type(result) not in basic_dt and result != None:
+            if not hasattr(result, "dot"):
+                result.dot = {}
+            if "id" not in result.dot.keys():
+                result.dot["id"] = self.id()
+                # result._id if hasattr(result, "_id") else self.id()
+        return result
+
+    def dot_Program(self, node):
+        dot = deepcopy(self.NODES["Program"])
+        dot["label"] = "Program"
+        dot["children"] = node.blocks
+        return dot
+
+    def dot_Block(self, node):
+        dot = deepcopy(self.NODES["Block"])
+        ch = [
+            *node.children,
+            *[b for a, b in node._attrs.items() if a != "body"],
+        ]
+        if "body" in node._attrs.keys():
+            ch.append(node._attrs["body"])
+        dot["label"] = str(node.type + ((": "+node.name) if node.name else ""))
+        dot["children"] = ch
+        return dot
+
+    def dot_Attr(self, node):
+        dot = deepcopy(self.NODES["Attr"])
+        dot["label"] = node.name
+        dot["children"] = [node.value]
+        if hasattr(node, "eval"):
+            if node.name != "body":
+                dot["extra"] = self.link_dot(node)
+        if node.name == "body":
+            if hasattr(node, "body_tokens"):
+                if "rtl" in node.body_tokens:
+                    dot["align"] = "rtl"
+                elif "ltr" in node.body_tokens:
+                    dot["align"] = "ltr"
+                elif "center" in node.body_tokens:
+                    dot["align"] = "center"
+        return dot
+
+    def dot_BinOp(self, node):
+        dot = deepcopy(self.NODES["Expr"])
+        dot["label"] = node.op
+        dot["children"] = [node.left, node.right]
+        return dot
+
+    def dot_UnaryOp(self, node):
+        dot = deepcopy(self.NODES["Expr"])
+        dot["label"] = node.op
+        dot["children"] = [node.value]
+        return dot
+
+    def dot_Num(self, node):
+        dot = deepcopy(self.NODES["Expr"])
+        # Use value as is. str because label.
+        dot["label"] = str(node.value)
+        return dot
+
+    def dot_Str(self, node):
+        dot = deepcopy(self.NODES["Expr"])
+        q = ""
+        if node.type == "SINGLEQ1":
+            q = "'"
+        if node.type == "SINGLEQ2":
+            q = "\""
+        if node.type == "TRIPLEQ1":
+            q = "'''"
+        if node.type == "TRIPLEQ2":
+            q = "\"\"\""
+        dot["label"] = q + str(node.value) + q
+        # Replacements for correct output.
+        dot["label"] = dot["label"].replace("\\", "\\\\")  # Double escapes
+        dot["label"] = dot["label"].replace("\"", "\\\"")  # Double escaped q
+        dot["label"] = dot["label"].replace("'", "\\\'")  # Single q
+        return dot
+
+    def dot_Bool(self, node):
+        dot = deepcopy(self.NODES["Expr"])
+        dot["label"] = "true" if node.value else "false"
+        return dot
+
+    def dot_Undefined(self, node):
+        dot = deepcopy(self.NODES["Expr"])
+        dot["label"] = "none"
+        return dot
+
+    def dot_Array(self, node):
+        dot = deepcopy(self.NODES["Expr"])
+        dot["label"] = node.__str__()
+        dot["children"] = node.children
+        return dot
+
+    def dot_Index(self, node):
+        dot = deepcopy(self.NODES["Expr"])
+        dot["label"] = node.__str__()
+        return dot
+
+    def dot_Dict(self, node):
+        dot = deepcopy(self.NODES["Expr"])
+        dot["label"] = node.__str__()
+        dot["children"] = node.children
+        return dot
+
+    def dot_DictCouple(self, node):
+        dot = deepcopy(self.NODES["Expr"])
+        dot["label"] = str(node.left) + " -> " + str(node.right)
+        return dot
+
+    def dot_Func(self, node):
+        dot = deepcopy(self.NODES["Expr"])
+        if node.children:
+            chtitle = "." + str(len(node.children)) + "."
+            children = node.children
+        else:
+            chtitle = ""
+            children = []
+
+        # Print eval node or its link.
+        dot["label"] = f"{node.value}({chtitle})"
+        dot["children"] = children
+        dot["extra"] = self.link_dot(node) if hasattr(node, "eval") else ""
+        return dot
+
+    # def dot_FuncArgs(self, node):
+    #     dot = deepcopy(self.NODES["Expr"])
+    #     dot["children"] = node.children
+    #     dot["label"] = self.__str__()
+    #     return dot
+
+    def dot_Identifier(self, node):
+        dot = deepcopy(self.NODES["Expr"])
+        dot["label"] = node.__str__()
+        dot["children"] = node.children
+        dot["extra"] = self.link_dot(node) if hasattr(node, "eval") else ""
+        return dot
+
+    # Need test FIXME
+
+    def links(self, nodefrom, nodeto):
+        _dot = ""
+        do_node = True
+        if nodeto.eval != None:
+            if isinstance(nodeto.eval, ast.AST):
+                if nodeto.eval != nodeto:
+                    dottu = nodeto.eval.dot["id"]
+                    self.g.attr('edge', color='blue')
+                    self.g.edge(f'node{nodefrom._id}', f'node{nodeto._id}')
+
+    def generate(self):
+        self.cluster_edges[self.CLUSTER_DEFAULT] = []
+        self.cluster_edges[self.CLUSTER_EVAL] = []
+        self.nodes
+        for i, c in enumerate(self.clusters):
+            c.edges(self.cluster_edges[i])

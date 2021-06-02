@@ -86,12 +86,12 @@ class Block(AST):
                            for a in children.children if type(a) == Attr}
 
     def __str__(self):
-        idpart = f"{self.id}, " if hasattr(self, "id") else ""
+        idpart = f"#{self.id}" if hasattr(self, "id") else ""
 
         if hasattr(self, "name") and self.name != "":
-            return f"Block({idpart}{self.type}, {self.name})"
+            return f"Block({self.type}{idpart}, {self.name})"
         else:
-            return f"Block({idpart}{self.type})"
+            return f"Block({self.type}{idpart})"
 
     __repr__ = __str__
 

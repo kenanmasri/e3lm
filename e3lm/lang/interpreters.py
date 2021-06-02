@@ -9,6 +9,7 @@ from e3lm.lang import ast
 from e3lm.lang.data import basic_dt
 from e3lm.helpers.printers import cprint
 
+stuck_counter = 0
 
 class InterpreterError(BaseException):
     pass
@@ -372,6 +373,7 @@ class E3lmInterpreter(NodeVisitor):
         return obj
 
     def v_Attr(self, obj, *args, **kwargs):
+        global stuck_counter # For stack overflow avoidance
         # --- RETURN BASED ON EVALUATE ---
         evaluate = kwargs["evaluate"]
         if not hasattr(obj, "_lazy"):
@@ -407,6 +409,13 @@ class E3lmInterpreter(NodeVisitor):
                 obj.eval = self.abs_eval(_eval)
                 if obj in self.lazy_attrs:
                     self.lazy_attrs.remove(obj)
+
+                stuck_counter += 1
+                if stuck_counter > sys.getrecursionlimit():
+                    print("The attribute", obj.value, "is bugged. Please check your 3lm code.")
+                    stuck_counter = 0
+                    exit(1)
+
                 return obj.eval if evaluate == 2 else obj
             except (AttributeError, ValueError) as e:
                 if obj not in self.lazy_attrs:
@@ -414,15 +423,18 @@ class E3lmInterpreter(NodeVisitor):
                     self.lazy_attrs.append(obj)
                 return obj
 
+    # TODO better Jinja2 implementation
     def v_body(self, obj, *args, **kwargs):
         evaluate = kwargs["evaluate"]
-        #template = Template(obj.value)
-        #kwargs = self.program.current_block.attrs
-        #kwargs = {**kwargs, "body_tokens": obj.body_tokens}
-        # TODO better Jinja2 implementation
-        #obj.eval = template.render(**kwargs)
+        if evaluate:
+            if not hasattr(obj, "_body_template"):
+                obj._body_template = Template(obj.value)
+            kwargs = self.current_block.attrs
+            kwargs = {**kwargs, "body_tokens": obj.body_tokens}
+            obj.eval = obj._body_template.render(**kwargs)
+            return obj.eval if evaluate else obj
         # return obj
-        obj.eval = obj.value
+        # obj.eval = obj.value
         return obj.eval if evaluate else obj
 
     def v_Identifier(self, obj, *args, **kwargs):
@@ -566,6 +578,7 @@ class E3lmInterpreter(NodeVisitor):
         if not hasattr(obj, "eval"):
             raise SyntaxError("keyword '" + str(obj.children[0])
                               + "' is unknown.") from None
+
         return obj.eval if evaluate else obj
 
     def v_Index(self, obj, *args, **kwargs):

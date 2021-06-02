@@ -1,5 +1,5 @@
 import pytest
-from e3lm import printers
+from e3lm.helpers import printers
 from e3lm.tests import data
 from e3lm.lang.parser import E3lmParser
 from e3lm.utils.lang import parse

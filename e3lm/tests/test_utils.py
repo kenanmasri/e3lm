@@ -29,5 +29,5 @@ def test_backflow():
 
 
 def test_dotget():
-    program = interpret(code7)
+    program = interpret(code4)
     assert "hello" == dot_get(program, "my1.attr2.0.1.2.hi")

@@ -1,8 +1,14 @@
-Dummy alaa
-    attr0 = alaa2.attr5
+Dummy one
+    attr0 = two.attr5
     attr5 = 5
+    attr6 = Dummy.two
+    ---
+        Hi there bob!
+        My first name is {{ attr5 }}
+        My name is {{ testvariable }}
+        Lol bye
+    ---
 End
-Dummy alaa2
-    attr0 = alaa.attr5
-    attr5 = 51
+Dummy two
+    attr5 = 7
 End

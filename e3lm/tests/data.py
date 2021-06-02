@@ -1,5 +1,12 @@
 examples = []
 
+def getcode(num, prefix="code"):
+    code = globals().get(prefix + str(num), "")
+    if code != "":
+        return code
+    else:
+        return None
+
 # 0
 code0 = """\
 ; Empty block
@@ -125,7 +132,7 @@ examples.append({"text": code2,
                  "json": True,
                  })
 # 3
-code3 = """\
+errorcode0 = """\
 Dummy dummy_1_1
 ;comment
     attr0 = 0
@@ -133,14 +140,14 @@ Dummy dummy_1_1
    attr2 = 0
 End
 """
-examples.append({"text": code3,
+examples.append({"text": errorcode0,
                  "lex": {
                      "assert": [
                          ["error", {"class": "IndentationError", "lineno": 3}],
                      ]},
                  })
 # 4
-code4 = """\
+errorcode1 = """\
 Dummy dummy_2_1
     Dummy
         Dummy dummy_2_2
@@ -153,7 +160,7 @@ Dummy dummy_2_1
         End
   End
 """
-examples.append({"text": code4,
+examples.append({"text": errorcode1,
                  "lex": {
                      "assert": [
                          ["error", {"class": "IndentationError", "lineno": 4}],
@@ -161,7 +168,7 @@ examples.append({"text": code4,
                  "parse": True,
                  })
 # 5
-code5 = """\
+errorcode2 = """\
 Dummy dummy_2
         Dummy
     Dummy
@@ -175,7 +182,7 @@ End
     End
 End
 """
-examples.append({"text": code5,
+examples.append({"text": errorcode2,
                  "lex": True,
                  "parse": {
                      "assert": [
@@ -184,7 +191,7 @@ examples.append({"text": code5,
                      ]},
                  })
 # 6
-code6 = """\
+code3 = """\
 Dummy dummy_1
     attr1 = attr2
     attr2 = 2
@@ -211,11 +218,11 @@ End
 
 ; comment?
 """
-examples.append({"text": code6,
+examples.append({"text": code3,
                  "lex": True,
                  })
 # 7
-code7 = """\
+code4 = """\
 Dummy my1
     attr2 = {
         0: {
@@ -230,11 +237,11 @@ Dummy my1
 
 End
 """
-examples.append({"text": code7,
+examples.append({"text": code4,
                  "lex": True,
                  })
 # 8
-code8 = """\
+code5 = """\
 Dummy dummy_1
     attr1 = 1.0
     attr2 = 5.0
@@ -242,7 +249,7 @@ Dummy dummy_1
     attr2_unit = "m"
 End
 """
-examples.append({"text": code8,
+examples.append({"text": code5,
                  "interpret": True,
                  "units": {
                      "assert": [

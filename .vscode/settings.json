@@ -1,0 +1,20 @@
+{
+    "python.pythonPath": "env\\Scripts\\python.exe",
+    "ego.power-tools": {
+        "commands": {
+            "autopep8-command": {
+                "button": {
+                    "tooltip": "Run autopep8 on current Python file.",
+                    "text": "Autopep8",
+                    "color": "#d91",
+                    "action": {
+                        "type": "script",
+                        "script": "autopep8.js",
+                    },
+                    "ifFile": ".*\\.py"
+                },
+                "script": "autopep8.js",
+            }
+        },
+    }
+}

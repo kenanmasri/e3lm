@@ -1,6 +1,16 @@
 3lm:
     Docs:
         - Continue
+    CLI:
+        ✔ Make a beautiful CLI tool with my braille dots spinner `benchmarking` @done(21-05-24 21:18)
+        configuration file(s):
+            - rcfile
+            - home directory files
+        Interactive mode:
+            - 
+        ✔ Read coverage documentation and mechanism @done(21-05-25 20:23)
+        ✘ CLI should remember last plugin through tmpfile @cancelled(21-05-24 16:44)
+        ✔ printing generate tree revert to normal colored... from example @done(21-05-24 15:49)
     Language:
         lexer:
             ✔ Add levels for RPAREN + LPAREN @done(20-07-12 12:46)
@@ -19,7 +29,7 @@
         interpreter:
             ✔ Rewrite interpreters @done(20-08-02 00:52)
             ✔ Remove MODELS and its migration of program/block classes @done(20-08-02 11:30)
-            ✔ Refactor dot to be a plugin @done(20-08-06 23:29)
+            ☐ Refactor Dot to be a good plugin @high 
             ✔ JSON plugin for pre and post (values) @done(20-08-04 23:02)
             ✔ Refactor toJSON to be in JsonPlugin @done(20-08-05 20:35)
 
@@ -32,3 +42,6 @@
         ✔ Create extension base class @done(20-08-13 19:53)
         ✔ Enable extension making and packaging @done(20-08-13 19:53)
         - Documentation
+
+    Releasing and publishing:
+        - Read more about packaging your python projects
