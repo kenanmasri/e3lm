@@ -1,4 +1,4 @@
-<img src=".git/resources/logo.png" height="64" width="64" style="vertical-align: middle;"/> &nbsp;&nbsp; <span style="color: orange; font-size: 32px; vertical-align: middle;">3LM</span>
+<img src="resources/logo.png" height="64" width="64" style="vertical-align: middle;"/> &nbsp;&nbsp; <span style="color: orange; font-size: 32px; vertical-align: middle;">3LM</span>
 
 Have fun while learning!
 
