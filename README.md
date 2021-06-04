@@ -24,7 +24,7 @@ Whether you are a scientist, a programmer or an educator, 3LM can be useful for 
 | Dev: Mobile app | None | No one yet |
 | Analytics: Research for project growth | None | No one yet |
 | UX: Studying experience | None | No one yet |
-| Content Manager: | None | No one yet |
+| Content management in the website | None | @e3lm/dev-frontend |
 
 
 ## Additional Ideas Include:
