@@ -2,10 +2,14 @@
 """The 3lm CLI tool (e3lm) for managing 3lm projects and files.
 
 This tool is designed mainly to enable interpretation of 3lm files and upgrading
-3lm language and its plugins.
+the interpreter and its plugins.
 """
 
 __doc2__ = """additional arguments:
+    nothing for now.
+"""
+
+__doc3__ = """additional arguments:
   --plugin-list         view available plugins, use the following command:
   --plugin-install plugin
                         install a specific plugin
@@ -40,6 +44,7 @@ from e3lm.utils.lang import lex, parse, interpret
 from e3lm.lang.interpreters import E3lmInterpreter, E3lmPlugin
 from e3lm.contrib.json import JsonPlugin as Json
 from e3lm.contrib.dot import DotPlugin as Dot
+from graphviz import Source as GraphvizSource
 from e3lm.tests.data import getcode as gettestcode
 
 # Colors enabler
@@ -271,10 +276,8 @@ def CLI(input_file="-"):
             print(json.dumps(run_program.json, indent=4))
         if "view" in plugins:
             if run_program:
-                graph = run_program.dot["graph"]
+                graph = GraphvizSource(run_program.dot_source, filename="tmp/"+i+".dot", format="png")
                 graph.view()
-                # s = Source(content, filename="dot/"+i+".dot", format="png")
-                # s.view()
             else:
                 print("Nothing to view")
 
