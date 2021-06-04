@@ -4,7 +4,7 @@
   "description": "A language for exchanging knowledge",
   "main": "e3lm.py",
   "repository": "https://github.com/e3lm/e3lm.git",
-  "author": "Kenan Masri <kenanmasri@users.noreply.github.com>",
+  "author": "Kenan Masri <kenanmasri@outlook.com>",
   "license": "MIT",
   "private": false,
   "dependencies": {
