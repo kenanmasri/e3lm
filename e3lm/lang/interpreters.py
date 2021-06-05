@@ -410,11 +410,14 @@ class E3lmInterpreter(NodeVisitor):
                 if obj in self.lazy_attrs:
                     self.lazy_attrs.remove(obj)
 
-                stuck_counter += 1
-                if stuck_counter > sys.getrecursionlimit():
-                    print("The attribute", obj.value, "is bugged. Please check your 3lm code.")
-                    stuck_counter = 0
-                    exit(1)
+                # Removed recursion limit for 3lm interpreter..
+                # Basically a 3lm file won't be that large.
+
+                # stuck_counter += 1
+                # if stuck_counter > sys.getrecursionlimit():
+                    # print("Stuck at recursion: " + str(stuck_counter) + "\nThe attribute", obj, "is bugged. Please check your 3lm code.")
+                    # stuck_counter = 0
+                    # exit(1)
 
                 return obj.eval if evaluate == 2 else obj
             except (AttributeError, ValueError) as e:

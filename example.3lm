@@ -1,6 +1,6 @@
 Dummy one
     attr0 = two.attr5
-    attr5 = 5
+    attr5 = 5+8
     attr6 = Dummy.two
     ---
         Hi there bob!

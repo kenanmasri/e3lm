@@ -44,3 +44,6 @@ app.db
 test.db
 
 yarn-error.log
+
+coverage_html_report
+tests/

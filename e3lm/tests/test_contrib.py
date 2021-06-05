@@ -51,7 +51,8 @@ def test_dot():
     for i, d in enumerate(data.examples):
         if "dot" not in d.keys():
             continue
-        program, er = enum("dot", [Dot], i, d)
+        dot = Dot()
+        program, er = enum("dot", [dot], i, d)
 
         if type(d["dot"]) == dict:
             _d = d["dot"]

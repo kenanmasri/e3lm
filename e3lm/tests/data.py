@@ -42,6 +42,7 @@ examples.append({"text": code1,
                                      'NAME', 'END', 'END', 'END', 'END',
                                      'CLSS', 'END']],
                      ]},
+                 "dot": True,
                  })
 # 2
 code2 = """Dummy dummy_1
@@ -110,10 +111,10 @@ code2 = """Dummy dummy_1
                 "one": attr1,
                 "two": 2
             }
-            attr3 = [
-                "Hi", "There", attr2,
+            attr3a = [
+                "Hi", "There", {"one": 1},
             ]
-            attr4 = attr3[2]["one"]
+            attr4 = attr3a[2]["one"]
         End
     End
 End
@@ -126,9 +127,9 @@ examples.append({"text": code2,
                  "interpret": {
                      "assert": [
                          ["dummy_1_1_3.body", "Bodytext"],
+                         ["dummy_1_1_2.attr1", 1],
                          ["dummy_1_1_2.attr8", "Q2 TQ1"],
                      ]},
-                 "dot": True,
                  "json": True,
                  })
 # 3

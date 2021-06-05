@@ -29,9 +29,10 @@
         interpreter:
             ✔ Rewrite interpreters @done(20-08-02 00:52)
             ✔ Remove MODELS and its migration of program/block classes @done(20-08-02 11:30)
-            ☐ Refactor Dot to be a good plugin @high 
+            ✔ Refactor Dot to be a good plugin @high @done(21-06-05 13:27)
             ✔ JSON plugin for pre and post (values) @done(20-08-04 23:02)
             ✔ Refactor toJSON to be in JsonPlugin @done(20-08-05 20:35)
+            ✔ Removed recursion limit of 3lm since it won't be overused @done(21-06-05 14:02)
 
         ✔ Refactor tests @done(20-08-13 15:37)
         ✔ Write codecov @done(20-08-13 15:37)
