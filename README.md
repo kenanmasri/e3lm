@@ -13,25 +13,25 @@ Whether you are a scientist, a programmer or an educator, 3LM can be useful for 
 
 3LM is intended to be a structure language for a platform for education.
 
-## List of planned features:
+## Public list of organizational teams:
 
-| Feature Name | Expected Date | Feature Maintainer |
+| Responsibility | Expected Dates | Responsible Team |
 |--------------|---------------|--------------------|
-| CLI | Current | @kenanmasri |
-| Dev: Version controlled Πs | None | No one yet |
-| Dev: Website backend | Soon | @kenanmasri |
-| Dev: Website frontend | Soon | No one yet |
-| Dev: Mobile app | None | No one yet |
-| Analytics: Research for project growth | None | No one yet |
-| UX: Studying experience | None | No one yet |
-| Content Manager: | None | No one yet |
+| CLI | Current | https://github.com/kenanmasri |
+| Dev: Version controlled Πs | None | https://github.com/orgs/e3lm/teams/dev-backend |
+| Dev: Website backend | Soon | https://github.com/orgs/e3lm/teams/dev-backend |
+| Dev: Website frontend | Soon | https://github.com/orgs/e3lm/teams/dev-frontend |
+| Dev: Mobile app | None | https://github.com/orgs/e3lm/teams/dev-frontend |
+| Analytics: Research for project growth | None | - |
+| UX: Studying experience | None | https://github.com/orgs/e3lm/teams/dev-frontend |
+| Content management in the website | None | https://github.com/orgs/e3lm/teams/ |
 
 
 ## Additional Ideas Include:
 
  - Examination questions auto-extraction from 3lm files. (Could be a plugin.)
  - Contributable plugins (contrib folder?)
-
+ - Much more possibilities... See https://github.com/e3lm/e3lm/blob/master/e3lm.todo
 
 ---
 
