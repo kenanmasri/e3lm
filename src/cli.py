@@ -46,7 +46,7 @@ from e3lm.lang.interpreters import E3lmInterpreter, E3lmPlugin
 from e3lm.contrib.json import JsonPlugin as Json
 from e3lm.contrib.dot import DotPlugin as Dot
 from graphviz import Source as GraphvizSource
-from e3lm.tests.data import getcode as gettestcode
+from e3lm.demos.data import getcode as gettestcode
 
 # Colors enabler
 import colorama
@@ -489,7 +489,7 @@ if __name__ == "__main__":
                              action='store',
                              nargs='+',
                              type=str,
-                             help='interpret demos from tests in addition'
+                             help='interpret demos in addition'
                              )
 
     e3lm_parser.add_argument('-b',
