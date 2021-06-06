@@ -8,7 +8,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="e3lm",
-    version="0.1.2",
+    version="0.1.3",
     author="Kenan Masri",
     author_email="kenanmasri@outlook.com",
     description="e3lm CLI tool (3lm language) for managing .3lm projects and files.",

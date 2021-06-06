@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: e3lm
-Version: 0.1.2
+Version: 0.1.3
 Summary: e3lm CLI tool (3lm language) for managing .3lm projects and files.
 Home-page: https://github.com/e3lm/e3lm
 Author: Kenan Masri
