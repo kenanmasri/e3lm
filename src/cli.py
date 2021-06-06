@@ -204,7 +204,7 @@ def CLI(input_file="-"):
     for key, val in runstack.items():
         if os.path.isfile(val) and os.path.exists(val):
             try:
-                f = open(val)
+                f = open(val, encoding='utf-8')
                 d = "".join(f.readlines())
                 if benchmarking_mods["enabled"]:
                     d = (d + "\n") * int(benchmarking_mods["lengthofcode"])

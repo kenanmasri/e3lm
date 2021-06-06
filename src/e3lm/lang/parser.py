@@ -338,7 +338,7 @@ class E3lmParser():
             self.curpath = os.getcwd()
         else:
             self.curpath = os.path.dirname(os.path.abspath(input))
-            with open(input, 'r') as f:
+            with open(input, 'r', encoding='utf-8') as f:
                 textinput = "".join(f.readlines())
 
         # Before parsing-and-lexing filters
@@ -401,7 +401,7 @@ class E3lmParser():
                             linecounter[curimport]+1, match.end(1), line
                          )
                     )
-                with open(fpath, "r") as f:
+                with open(fpath, "r", encoding='utf-8') as f:
                     new = f.readlines()
                 new.append("\n")
                 self.imports[fpath] = (lineno+1, lineno+len(new))
