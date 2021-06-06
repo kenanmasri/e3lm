@@ -1,6 +1,6 @@
 import setuptools
 
-with open("PYPI.md", "r", encoding="utf-8") as fh:
+with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 with open("install_requirements.txt", "r", encoding="utf-8") as fh:
@@ -21,7 +21,7 @@ setuptools.setup(
     entry_points='''
         [console_scripts]
         e3lm=cli:main
-    '''
+    ''',
     python_requires='>=3.6',
     install_requires=[install_requirements],
     classifiers=[
