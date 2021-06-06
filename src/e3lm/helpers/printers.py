@@ -1,4 +1,4 @@
-# -*- coding=utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import pprint
 from asciitree import LeftAligned, Traversal, KeyArgsConstructor
@@ -160,7 +160,7 @@ TREE = LeftAligned
 def TREEBOX_E3LM(colorname, charset=[]):
     """Return a BoxStyle for asciitree using ordered charset and named color"""
     if charset == []:
-        charset = [chr(0x2514), chr(0x2500), chr(0x2502), chr(0x251C)]
+        charset = ["└", "─", "│", "├"] #chr(0x2514), chr(0x2500), chr(0x2502), chr(0x251C)]
     box = {
         'UP_AND_RIGHT': COLORS[colorname] + charset[0] + COLORS["R"],
         'HORIZONTAL': COLORS[colorname] + charset[1] + COLORS["R"],

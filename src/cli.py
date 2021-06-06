@@ -1,4 +1,4 @@
-# -*- coding=utf-8 -*-
+# -*- coding: utf-8 -*-
 """The e3lm CLI tool (3lm language) for managing 3lm projects and files.
 
 This tool is designed mainly to enable interpretation of 3lm files and upgrading
