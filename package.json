@@ -2,7 +2,7 @@
   "name": "3lm",
   "version": "1.0.0",
   "description": "A language for exchanging knowledge",
-  "main": "e3lm.py",
+  "main": "src/cli.py",
   "repository": "https://github.com/e3lm/e3lm.git",
   "author": "Kenan Masri <kenanmasri@outlook.com>",
   "license": "MIT",

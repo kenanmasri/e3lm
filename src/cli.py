@@ -1,5 +1,5 @@
 # -*- coding=utf-8 -*-
-"""The 3lm CLI tool (e3lm) for managing 3lm projects and files.
+"""The e3lm CLI tool (3lm language) for managing 3lm projects and files.
 
 This tool is designed mainly to enable interpretation of 3lm files and upgrading
 the interpreter and its plugins.
@@ -36,16 +36,16 @@ from datetime import datetime
 from time import sleep
 from time import perf_counter
 
-from e3lm.utils.spin import animate as spinner
-from e3lm.helpers import printers
-from e3lm.helpers.printers import COLORS as COLS
-from e3lm.lang.ast import basic_dt
-from e3lm.utils.lang import lex, parse, interpret
-from e3lm.lang.interpreters import E3lmInterpreter, E3lmPlugin
-from e3lm.contrib.json import JsonPlugin as Json
-from e3lm.contrib.dot import DotPlugin as Dot
+from utils.spin import animate as spinner
+from helpers import printers
+from helpers.printers import COLORS as COLS
+from lang.ast import basic_dt
+from utils.lang import lex, parse, interpret
+from lang.interpreters import E3lmInterpreter, E3lmPlugin
+from contrib.json import JsonPlugin as Json
+from contrib.dot import DotPlugin as Dot
 from graphviz import Source as GraphvizSource
-from e3lm.tests.data import getcode as gettestcode
+from tests.data import getcode as gettestcode
 
 # Colors enabler
 import colorama
@@ -435,7 +435,7 @@ if __name__ == "__main__":
                                           epilog=__doc2__)
 
     e3lm_parser.add_argument('--version', action="version",
-                             version="e3lm v1.0.0 (3lm lang 1.0)")
+                             version="e3lm v" + __version__ + " (3lm language)")
 
     e3lm_parser.add_argument('file',
                              nargs='?',
