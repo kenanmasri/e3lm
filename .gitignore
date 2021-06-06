@@ -24,6 +24,7 @@ local_settings.py
 build/
 develop-eggs/
 eggs/
+src/*.egg-info
 downloads/
 .coverage
 htmlcov/
