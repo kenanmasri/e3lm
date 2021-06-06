@@ -22,7 +22,6 @@ setuptools.setup(
         [console_scripts]
         e3lm=cli:main
     ''',
-    python_requires='>=3.6',
     install_requires=[install_requirements],
     classifiers=[
         "Programming Language :: Python :: 3",
