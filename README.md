@@ -25,7 +25,7 @@ Whether you are a scientist, a programmer or an educator, 3LM can be useful for 
 
 ## Installation
 
-| NOTE: Installation may not work right now.. You might have to clone the repository.
+> NOTE: Installation may not work right now.. You might have to clone the repository.
 
 Creating a virtual environment is preferrable since its release is not stable yet.
 
