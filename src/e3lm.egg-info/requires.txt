@@ -12,12 +12,13 @@ Jinja2==3.0.1
 lxml==4.6.3
 MarkupSafe==2.0.1
 more-itertools==8.8.0
+packaging==20.9
 Pillow==8.2.0
-pluggy==0.13.1
 ply==3.11
 py==1.10.0
 pycodestyle==2.7.0
 pyparsing==2.4.7
+pytest==6.2.4
 python-dotenv==0.17.1
 python-pptx==0.6.19
 six==1.16.0
