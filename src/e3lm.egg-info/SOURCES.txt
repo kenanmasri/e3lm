@@ -6,6 +6,8 @@ src/e3lm/__init__.py
 src/e3lm.egg-info/PKG-INFO
 src/e3lm.egg-info/SOURCES.txt
 src/e3lm.egg-info/dependency_links.txt
+src/e3lm.egg-info/entry_points.txt
+src/e3lm.egg-info/requires.txt
 src/e3lm.egg-info/top_level.txt
 src/e3lm/contrib/__init__.py
 src/e3lm/contrib/dot.py

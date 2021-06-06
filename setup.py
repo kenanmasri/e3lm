@@ -18,10 +18,7 @@ setuptools.setup(
     project_urls={
         "Bug Tracker": "https://github.com/e3lm/e3lm/issues",
     },
-    entry_points='''
-        [console_scripts]
-        e3lm=cli:main
-    ''',
+    entry_points='''[console_scripts]\ne3lm=cli:main''',
     install_requires=[install_requirements],
     classifiers=[
         "Programming Language :: Python :: 3",

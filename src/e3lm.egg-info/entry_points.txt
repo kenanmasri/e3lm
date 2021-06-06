@@ -1,0 +1,2 @@
+[console_scripts]
+e3lm=cli:main
