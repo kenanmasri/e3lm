@@ -4,6 +4,7 @@
 This tool is designed mainly to enable interpretation of 3lm files and upgrading
 the interpreter and its plugins.
 """
+__version__ = "0.1.0"
 
 __doc2__ = """additional arguments:
     nothing for now.
@@ -435,7 +436,7 @@ if __name__ == "__main__":
                                           epilog=__doc2__)
 
     e3lm_parser.add_argument('--version', action="version",
-                             version="e3lm v" + __version__ + " (3lm language)")
+                             version="e3lm CLI v" + __version__ + " (3lm language)")
 
     e3lm_parser.add_argument('file',
                              nargs='?',
