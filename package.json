@@ -2,12 +2,13 @@
   "name": "3lm",
   "version": "1.0.0",
   "description": "A language for exchanging knowledge",
-  "main": "src/cli.py",
+  "main": "js/main",
   "repository": "https://github.com/e3lm/e3lm.git",
   "author": "Kenan Masri <kenanmasri@outlook.com>",
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "dotenv": "^10.0.0"
+    "dotenv": "^10.0.0",
+    "jison": "^0.4.18"
   }
 }

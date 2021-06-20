@@ -17,8 +17,8 @@ _parser = E3lmParser()
 
 def lex(text, source=None, lexer=None, token_map=True, **kwargs):
     """Lex text.
-    `lexer`, `source`
-    and the rest are used for building the lexer
+
+    `lexer`, `source` and the rest are used for building the lexer
     """
     srs = source or "<string>"
 
@@ -111,3 +111,50 @@ def interpret(text,
                                  .format(plugin.__class__.__name__))
 
     return result
+
+
+def get_plugin(string):
+    """Gets an E3lm plugin from the plugins contrib folder or a directory
+    specified by the env variable `E3LM_PYTHON_PLUGINS_DIR`.
+
+    Plugins are classes that extend E3lmPlugin and the file name is the
+    plugin name. For example "json" plugin is from the file "json.py"
+    and the class name is JsonPlugin. The class name is the plugin name
+    but the first letter is uppercased plus "Plugin".
+
+    If the custom plugin folder does not have __init__.py, it is ignored and
+    fallbacks to E3lmPlugin default directory.
+    """
+    import os
+    res = {}
+    dirs = []
+    os.environ.setdefault(
+        "E3LM_PYTHON_PLUGINS_DIR", "e3lm_plugins")
+    pluginsdir = os.environ.get("E3LM_PYTHON_PLUGINS_DIR")
+    if not os.path.exists(pluginsdir) or not os.path.isdir(pluginsdir):
+        pluginsdir = os.path.abspath(os.path.join(os.path.dirname(
+            os.path.realpath(__file__)), '..' + os.sep, 'contrib'))
+
+    if not os.path.isdir(pluginsdir) or not os.path.exists(pluginsdir + os.sep + "__init__.py"):
+        pluginsdir = os.path.abspath(os.path.join(os.path.dirname(
+            os.path.realpath(__file__)), '..' + os.sep, 'contrib'))
+
+    if not os.path.isdir(pluginsdir) or not os.path.exists(pluginsdir + os.sep + "__init__.py"):
+        raise ImportError("E3lm cannot find plugin \"" + str(string) +
+                          "\" in the plugins dir \"" + pluginsdir + "\".")
+
+    if not string.endswith(".py"):
+        string = string + ".py"
+    if os.path.exists(pluginsdir + os.sep + string):
+        if not os.path.isfile(pluginsdir + os.sep + string):
+            raise ImportError("E3lm cannot import directory as plugin \"" +
+                              str(string) + "\" in the plugins dir \"" + pluginsdir + "\".")
+        try:
+            module = __import__("e3lm.contrib." + string[:-3], fromlist=["*"])
+            x = getattr(module, string[0].upper() + string[1:-3] + "Plugin")
+            return x
+        except ImportError as e:
+            raise e
+        except AttributeError as e:
+            raise e
+    raise ModuleNotFoundError("Could not find e3lm plugin \"" + str(string[:-3]) + "\".")

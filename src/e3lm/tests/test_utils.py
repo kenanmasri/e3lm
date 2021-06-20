@@ -6,7 +6,7 @@ from e3lm.lang import ast
 from e3lm.utils.lang import interpret
 from e3lm.lang.lexer import E3lmLexer
 from e3lm.lang.parser import E3lmParser
-from .data import *
+from e3lm.demos import data
 
 
 def test_backflow():
@@ -29,5 +29,5 @@ def test_backflow():
 
 
 def test_dotget():
-    program = interpret(code4)
+    program = interpret(data.code4)
     assert "hello" == dot_get(program, "my1.attr2.0.1.2.hi")

@@ -7,7 +7,6 @@
 			"command": "${config:python.pythonPath}",
 			"args": ["-m", "autopep8", "--in-place", "${file}"],
 			"isBackground": true,
-			"runOptions": {"runOn": ""}
 		  }
 		]
 	},
@@ -53,7 +52,6 @@
 				"source": "Git Bash",
 				"icon": "server-environment",
 				"env": {},
-				"args": ["--rcfile", ".bashrc"]
 			}
 		},
 		"terminal.integrated.profiles.linux": {
@@ -79,6 +77,7 @@
 			"PATH": "${workspaceFolder}/:${env:PATH}",
 			"WORKSPACE": "${workspaceFolder}"
 		},
+		"terminal.integrated.defaultProfile.windows": "Git Bash",
 		"python.pythonPath": "env\\Scripts\\python.exe",
 	}
 }

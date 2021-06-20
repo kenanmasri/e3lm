@@ -6,6 +6,7 @@ from asciitree.drawing import BoxStyle
 
 COLORS = {
     # Default...
+    "NONE": u"",
     "GRAY": u'\x1b[38;5;245m',
     "HEADER": u'\x1b[95m',
     "INFO": u'\x1b[38;5;164m',
@@ -31,16 +32,16 @@ COLORS = {
     "R": u'\x1b[0m',
     "RESET": u'\x1b[0m',
     # From CLI...
-    "H": u'\x1b[95m', # HEADER
-    "1": u'\x1b[38;5;164m', # FIRST
-    "2": u'\x1b[38;5;173m', # SECOND
-    "3": u'\x1b[38;5;177m', # THIRD
-    "4": u'\x1b[38;5;225m', # FOURTH
-    "E": u'\x1b[91m', # ERROR
-    "W": u'\x1b[93m', # WHITE
-    "R": u'\x1b[0m', # RESET
-    "B": u'\x1b[1m', # BOLD
-    "U": u'\x1b[4m', # UNDERLINE
+    "H": u'\x1b[95m',  # HEADER
+    "1": u'\x1b[38;5;164m',  # FIRST
+    "2": u'\x1b[38;5;173m',  # SECOND
+    "3": u'\x1b[38;5;177m',  # THIRD
+    "4": u'\x1b[38;5;225m',  # FOURTH
+    "E": u'\x1b[91m',  # ERROR
+    "W": u'\x1b[93m',  # WHITE
+    "R": u'\x1b[0m',  # RESET
+    "B": u'\x1b[1m',  # BOLD
+    "U": u'\x1b[4m',  # UNDERLINE
 }
 
 
@@ -54,8 +55,22 @@ class TraverseItem(KeyArgsConstructor):
 
 class TRAVERSE(Traversal):
     evaluate = False
-    colors_enabled = True
     program_name = ""
+
+    def __init__(self, cols=COLORS, charset=[], **kwargs):
+        self.charset = {
+            "Program": chr(4),
+            "Block": "□ ",
+            "TraverseItem": {
+                "Import": " ╰ ",
+                "Attr": "⌐ ",
+                "TraverseArrow": "→",
+                "body_tokens": "←",
+            },
+        } if charset == [] else charset
+        self.COLS = cols
+        super().__init__(**kwargs) # Pass kwargs to parent
+
 
     def get_children(self, node):
         """Return a list of children of a node."""
@@ -114,41 +129,41 @@ class TRAVERSE(Traversal):
         return str(node)
 
     def get_text_of_Program(self, node):
-        namae = COLORS["HEADER"] + self.program_name or node.id
-        return COLORS["BOLD"] + COLORS["INFO2"] + " "+chr(4)+" " + COLORS["INFO"] + "Program(" + namae + COLORS["INFO"] + ")" + COLORS["R"]
+        namae = self.COLS["HEADER"] + self.program_name # or node.id
+        return self.COLS["BOLD"] + self.COLS["INFO2"] + " " + self.charset["Program"] + " " + self.COLS["INFO"] + "Program(" + namae + self.COLS["INFO"] + ")" + self.COLS["R"]
 
     def get_text_of_Block(self, block):
-        idpart = (COLORS["HEADER"] + COLORS["UNDERLINE"] +
-                  f"#{block.id}" + COLORS["R"]) if hasattr(block, "id") else ""
-        namepart = (COLORS["HEADER"] + ", " + block.name +
-                    COLORS["R"]) if block.name != "" else ""
-        namae = COLORS["HEADER"] + block.type + idpart + namepart
-        return COLORS["INFO2"] + "□ " + COLORS["INFO"] + "Block(" + namae + COLORS["INFO"] + ")" + COLORS["R"]
+        idpart = (self.COLS["HEADER"] + self.COLS["UNDERLINE"] +
+                  f"#{block.id}" + self.COLS["R"]) if hasattr(block, "id") else ""
+        namepart = (self.COLS["HEADER"] + ", " + block.name +
+                    self.COLS["R"]) if block.name != "" else ""
+        namae = self.COLS["HEADER"] + block.type + idpart + namepart
+        return self.COLS["INFO2"]+ self.charset["Block"] + self.COLS["INFO"] + "Block(" + namae + self.COLS["INFO"] + ")" + self.COLS["R"]
 
     def get_text_of_TraverseItem(self, item):
         if item.type == "Import":
-            return COLORS["INFO2"] + " ╰ " + COLORS["GRAY"] + "import " + COLORS["WHITE"] + item.value + COLORS["R"]
+            return self.COLS["INFO2"] + self.charset["TraverseItem"]["Import"] + self.COLS["GRAY"] + "import " + self.COLS["WHITE"] + item.value + self.COLS["R"]
         elif item.type == "Attr":
             attr = item
-            namae = COLORS["HEADER"] + attr.name + COLORS["R"]
-            eqq = COLORS["SUCCESS"] + " = " + COLORS["R"]
-            valae = COLORS["INFO"] + str(attr.value.value) + COLORS["R"]
+            namae = self.COLS["HEADER"] + attr.name + self.COLS["R"]
+            eqq = self.COLS["SUCCESS"] + " = " + self.COLS["R"]
+            valae = self.COLS["INFO"] + str(attr.value.value) + self.COLS["R"]
             arrowpart = ""
             if type(attr.children) == TraverseArrow:
                 arrowpart = " " + \
-                    COLORS["WARNING"] + \
-                    "".join([str(" " + COLORS["BLUE"] + "→" + COLORS["CYAN"] +
+                    self.COLS["WARNING"] + \
+                    "".join([str(" " + self.COLS["BLUE"] + self.charset["TraverseItem"]["TraverseArrow"] + self.COLS["CYAN"] +
                             " %s") % v for v in attr.children.rights])
             if attr.name == "body":
                 if hasattr(attr.o.body, "body_tokens"):
-                    valae = COLORS["HEADER"] + attr.value[:5] + \
+                    valae = self.COLS["HEADER"] + attr.value[:5] + \
                         (attr.value[5:] and "...") + \
-                        "["+len(attr.value)+"]" + COLORS["R"]
+                        "["+len(attr.value)+"]" + self.COLS["R"]
                     # attr.o.body.body_tokens
                     arrowpart = " " + \
-                        COLORS["WARNING"] + \
-                        " ← (" + ",".join(attr.o.body.body_tokens) + ")"
-            return COLORS["INFO2"] + "⌐ " + COLORS["SUCCESS"] + "Attr(" + namae + eqq + valae + COLORS["SUCCESS"] + ")" + arrowpart + COLORS["R"]
+                        self.COLS["WARNING"] + \
+                        " " + self.charset["TraverseItem"]["body_tokens"] + "(" + ",".join(attr.o.body.body_tokens) + ")"
+            return self.COLS["INFO2"] + self.charset["TraverseItem"]["Attr"] + self.COLS["SUCCESS"] + "Attr(" + namae + eqq + valae + self.COLS["SUCCESS"] + ")" + arrowpart + self.COLS["R"]
 
     def get_text_of_TraverseArrow(self, arrow):
         return str(arrow.value)
@@ -160,23 +175,38 @@ TREE = LeftAligned
 def TREEBOX_E3LM(colorname, charset=[]):
     """Return a BoxStyle for asciitree using ordered charset and named color"""
     if charset == []:
-        charset = ["└", "─", "│", "├"] #chr(0x2514), chr(0x2500), chr(0x2502), chr(0x251C)]
-    box = {
-        'UP_AND_RIGHT': COLORS[colorname] + charset[0] + COLORS["R"],
-        'HORIZONTAL': COLORS[colorname] + charset[1] + COLORS["R"],
-        'VERTICAL': COLORS[colorname] + charset[2] + COLORS["R"],
-        'VERTICAL_AND_RIGHT': COLORS[colorname] + charset[3] + COLORS["R"],
-    }
+        # chr(0x2514), chr(0x2500), chr(0x2502), chr(0x251C)]
+        charset = ["└", "─", "│", "├"]
+
+    if colorname == "NONE":
+        box = {
+            'UP_AND_RIGHT': charset[0],
+            'HORIZONTAL': charset[1],
+            'VERTICAL': charset[2],
+            'VERTICAL_AND_RIGHT': charset[3],
+        }
+    else:
+        box = {
+            'UP_AND_RIGHT': COLORS[colorname] + charset[0] + COLORS["R"],
+            'HORIZONTAL': COLORS[colorname] + charset[1] + COLORS["R"],
+            'VERTICAL': COLORS[colorname] + charset[2] + COLORS["R"],
+            'VERTICAL_AND_RIGHT': COLORS[colorname] + charset[3] + COLORS["R"],
+        }
     return box
 
 
 class BOXSTYLE(BoxStyle):
     """A rendering style that uses box draw characters and a common layout."""
-    gfx = TREEBOX_E3LM("INFO2")  # : Glyphs to use.
+    gfx = None        #: Glyphs to use.
+    color = "NONE"    #: Color to use for tree arrows.
     label_space = 1   #: Space between glyphs and label.
     horiz_len = 2     #: Length of horizontal lines
     indent = 1        #: Indent for subtrees
     label_format = u'{}'
+
+    def __init__(self, color="NONE", gfx=TREEBOX_E3LM, charset=[]):
+        self.color = color
+        self.gfx = gfx(color, charset)
 
     def child_head(self, label):
         return (' ' * self.indent
@@ -205,7 +235,12 @@ class BOXSTYLE(BoxStyle):
                 + line)
 
 
-TREE_NODES = TREE(draw=BOXSTYLE())
+TREE_NODES = TREE(draw=BOXSTYLE(color="INFO2", gfx=TREEBOX_E3LM, charset=[]))
+TREE_NODES_NC = TREE(draw=BOXSTYLE(color="NONE", gfx=TREEBOX_E3LM, charset=[]))
+TREE_NODES_NG = TREE(draw=BOXSTYLE(
+    color="INFO2", gfx=TREEBOX_E3LM, charset=["'->", "-", "|", "|->"]))
+TREE_NODES_NCNG = TREE(draw=BOXSTYLE(
+    color="NONE", gfx=TREEBOX_E3LM, charset=["'->", "-", "|", "|->"]))
 
 
 def _print(text, *args):  # pragma: no cover
@@ -217,15 +252,54 @@ def _print(text, *args):  # pragma: no cover
         else:
             col = arg
 
-    cprint("\n".join(_all), col=col)
+    cprint("\n".join(_all), color=col)
 
 
-def cprint(text, col="INFO"):  # pragma: no cover
-    col = col.upper()
-    print(COLORS[col] + str(text) + COLORS["ENDC"])
+def cprint(text, color="NONE"):  # pragma: no cover
+    if color == "NONE" or color == "":
+        print(str(text))
+    else:
+        color = color.upper()
+        print(COLORS[color] + str(text) + COLORS["ENDC"])
 
 
 def nprint(node, max_level=6, treefunc=TREE_NODES, **kwargs):  # pragma: no cover
     """Print nodes using `asciitree`"""
-    treefunc.traverse = TRAVERSE(**kwargs)
+
+    if "noglyph" in kwargs.keys():
+        if kwargs["noglyph"] == True:
+            traverse_charset = {
+                "Program": "*",
+                "Block": "o ",
+                "TraverseItem": {
+                    "Import": " < ",
+                    "Attr": "> ",
+                    "TraverseArrow": "=>",
+                    "body_tokens": "<=",
+                }
+            }
+
+            if treefunc == TREE_NODES:
+                treefunc = TREE_NODES_NG
+            elif treefunc == TREE_NODES_NC:
+                treefunc = TREE_NODES_NCNG
+        else:
+            traverse_charset = []
+    else:
+        traverse_charset = []
+
+    if "pallete" in kwargs.keys():
+        if kwargs["pallete"] == None:
+            pallete = {k: "" for k in COLORS.keys()}
+
+            if treefunc == TREE_NODES:
+                treefunc = TREE_NODES_NC
+            elif treefunc == TREE_NODES_NG:
+                treefunc = TREE_NODES_NCNG
+        else:
+            pallete = kwargs["pallete"]
+    else:
+        pallete = COLORS
+
+    treefunc.traverse = TRAVERSE(cols=pallete, charset=traverse_charset, **kwargs)
     print("\n" + treefunc(node) + "\n")
