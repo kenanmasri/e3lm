@@ -69,7 +69,7 @@ def convert_string(start_tok, string_toks):
     Raises:
         `AssertionError`
     """
-    #  "b"   - convert to bytestring
+    #  "u"   - convert from unicode
     #  ""    - string
 
     # First we remove continue-newline tokens and lstrip the token next to it.
@@ -83,10 +83,11 @@ def convert_string(start_tok, string_toks):
     quote_type = start_tok.value.lower()
     if quote_type == "":
         return s
-    elif quote_type == "b":
+    elif quote_type == "u":
         return s.encode("utf-8")
     else:
-        raise AssertionError("Unknown string quote type: %r." % (quote_type,))
+        raise AssertionError(
+            "Unknown string quote type: \"%r\"." % (quote_type,))
 
 
 def bodify_indents(string, indents):
@@ -674,7 +675,7 @@ class E3lmLexer():
     def t_EXPR_RDICT(self, t):
         r'\}'
         t.lexer.dict_level -= 1
-        if t.lexer.paren_level == -1:
+        if t.lexer.dict_level == -1:
             raise_lex_error(t, "Closing dict error.", type=SyntaxError)
         return t
 
@@ -968,7 +969,7 @@ class E3lmLexer():
                         "text": "!None",
                         "newline": "\n",
                     }
-                if key == "indent":
+                elif key == "indent":
                     append = {
                         "indent": "spacelen()",
                     }

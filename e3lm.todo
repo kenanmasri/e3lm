@@ -1,6 +1,12 @@
 3lm:
     Docs:
         - Continue
+    
+    Javascript:
+        - Make Lexer
+        - Make Parser
+        - Make Pluggable
+
     CLI:
         ✔ Make a beautiful CLI tool with my braille dots spinner `benchmarking` @done(21-05-24 21:18)
         configuration file(s):
