@@ -56,6 +56,8 @@ import itertools
 
 CLI_PLUGINS = [
     "view",
+    "lex",
+    "parse",
 ] # Plugins that are not E3lmPlugin
 
 
@@ -222,12 +224,13 @@ def CLI(input_file="-"):
         elif formatstyle == "COMPATIBLE":
             print("Runtime.begin", i)
 
-        run_plugins = [get_plugin(p) for p in plugins if type(
-            get_plugin(p)) not in basic_dt and p not in CLI_PLUGINS]
+        run_plugins = [get_plugin(p) for p in plugins if p not in CLI_PLUGINS
+            and type(get_plugin(p)) not in basic_dt]
 
         if "lex" in plugins:
             run_program = lex(run, i, debug=verbose_lvl >= 2,
                               enable_colors=nocolors == False, tracking=verbose_lvl >= 2)
+            return True
 
         if "parse" in plugins:
             run_program = parse(run, parser_kwargs={

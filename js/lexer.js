@@ -1,26 +1,15 @@
 // lexer.js
 
 const langdata = require("./data");
+const printers = require("./printers");
+
+const COLORS = printers.COLORS;
+
 // var Lexer = require('flex-js');
 var Tokenizr = require('tokenizr');
 const { default: Complex } = require("complex.js");
 const tokens = langdata.tokens;
 const regexes = langdata.regexes;
-
-const Generator =
-  {
-    map: (f,g) => function* (...args)
-      {
-        for (const x of g (...args))
-          yield f (x)
-      },
-    filter: (f,g) => function* (...args)
-      {
-        for (const x of g (...args))
-          if (f (x))
-            yield x
-      }
-  }
 
 
 class LexStack extends Object {
@@ -46,15 +35,14 @@ class LexStack extends Object {
         // Indents of the token line.
         // This number will be compared to be GREATER THAN "current" tokens...
         if (this.follow_indentation) {
-            stack["_indent_gt"] = this.lexer.computed["indent"][t.lineno];
+            stack["_indent_gt"] = this.lexer.computed["indent"][t.line - 1];
         }
 
-        this.store = []
         this.store.push(stack);
         this.id = this.store.length - 1;
 
         if (lexstate != null) {
-            this.lexer.push_state(lexstate);
+            this.lexer.tokenizr.push(lexstate);
         }
 
         return this.id;
@@ -62,7 +50,7 @@ class LexStack extends Object {
 
     pop(poplex=false) {
         if (poplex) {
-            this.lexer.pop_state();
+            this.lexer.tokenizr.pop();
         }
         var stack = this.store.pop();
         this.id -= 1;
@@ -71,15 +59,15 @@ class LexStack extends Object {
     }
 
     follow_indent(t, val=null) {
-        var lineno = t.lineno - 1;
-        var indents = this.lexer.computed["indents"][lineno];
-        if (this.hasOwnProperty("_indent_gt")) {
-            var req_indents = this._indent_gt;
+        var lineno = t.line;
+        var indents = this.lexer.computed["indent"][lineno];
+        if (this.get("_indent_gt", undefined) != undefined) {
+            var req_indents = this.get("_indent_gt")
             this.update("_indent", req_indents);
-            indents = this._indent;
+            indents = this.get("_indent");
             delete this.store[this.id]["_indent_gt"];
         } else {
-            req_indents = this._indent;
+            req_indents = this.get("_indent");
         }
 
         if (val) {
@@ -87,12 +75,13 @@ class LexStack extends Object {
         }
 
         if (req_indents != indents) {
-            raise_lex_error(t, "Expected " + String(req_indents) + " indents, got " + String(indents) + ".",
-            type="IndentationError",
-            details={
-                "req_indents": req_indents,
-                "indents": indents,
-                }
+            var type, details;
+            this.lexer.raise_error(t, "LexError", "Expected " + String(req_indents) + " indents, got " + String(indents) + ".",
+                type="IndentationError",
+                details={
+                    "req_indents": req_indents,
+                    "indents": indents,
+                    }
             );
         }
     }
@@ -153,11 +142,20 @@ class E3lmLexer {
         "newline": [5,],
     }
 
-    _newline_pattern = /\n/g;
+    _newline_pattern = /\n/;
     
     debug = true
-    // print_method = console.log
-    default_state = 'default';
+    print = (x, col="magenta", ...args) => {
+        if (args.length == 0) {args = false;}
+        if (this.debug) {
+            if (col && typeof col != "string") {
+                console.log(COLORS["LOG"]("LOG"), COLORS["LOG_MSG"](x), col, args ? COLORS["LOG_MSG"](...args) : "");
+            } else {
+                console.log(COLORS["LOG"]("LOG"), COLORS[col](x), args ? COLORS["LOG_MSG"](...args) : "");
+            }
+        }
+    };
+    default_state = 'INITIAL';
     
     states = [
         ["BLOCK", "exclusive"],
@@ -189,10 +187,10 @@ class E3lmLexer {
     class_name_char = this.begin_char_up + this.cont_char
 
     re_identifier = new RegExp('(' + this.identifier_char + '*)', 'y');
-    re_class_def = new RegExp('(' + this.class_name_char + "* " +
+    re_class_def = new RegExp('(' + this.class_name_char + "*)[ \t]*(" +
         this.identifier_char + "*)", 'y');
     
-    re_attr = new RegExp('(' + this.identifier_char + '*' + "\\s?\=\\s?)", 'y')
+    re_attr = new RegExp('(' + this.identifier_char + '*' + ")(\\s*\=\\s*)", 'y')
 
     re_float = regexes["Floatnumber"];
 
@@ -249,6 +247,8 @@ class E3lmLexer {
         this.tokenizr = new Tokenizr;
         this.stack = new LexStack(this, [{"_indent":0,"t":null}]);
         this.define_tokenizr_rules();
+        this.filter_strings.prototype.return = undefined;
+        this.post_token.prototype.return = undefined;
         return this;
     }
 
@@ -307,33 +307,33 @@ class E3lmLexer {
 
         // State: INITIAL
 
-        this.tokenizr.rule(this.default_state, /\n/g, (ctx, match) => {
+        this.tokenizr.rule(this.default_state, this._newline_pattern, (ctx, match) => {
             ctx.accept('NEWLINE');
         }, 'rule_NEWLINE');
 
         this.tokenizr.rule(this.default_state, this.re_class_def, (ctx, match) => {
             ctx.push('BLOCK');
-            ctx.accept('CLSS', match[0]);
+            ctx.accept('CLSS', match[1] + (match[2] ? ("#" + match[2]) : ""));
         }, 'rule_CLSS');
 
-        this.tokenizr.rule(this.default_state, this.re_identifier, (ctx, match) => {
+        // Unnecessary tokenization
+        /*this.tokenizr.rule(this.default_state, this.re_identifier, (ctx, match) => {
             var type = 'ID';
             if (match[0].toLowerCase() in this.reserved) {type = this.reserved[match[0].toLowerCase()];}
             ctx.accept(type);
-        }, 'rule_ID');
+        }, 'rule_ID');*/
 
         // State: BLOCK
 
-        this.tokenizr.rule('BLOCK', /[eE][nN][dD](.*)/g, (ctx, match) => {
-            ctx.accept('END').pop();
-            ctx.data('check_indents', true);
-            this.stack.pop();
+        this.tokenizr.rule('BLOCK', /[Ee][Nn][Dd](.*)/g, (ctx, match) => {
+            ctx.accept('END');
+            this.stack.pop(true);
             this.stack.indent_check = "lt"
         }, 'rule_BLOCK_END');
 
         this.tokenizr.rule('BLOCK', this.re_attr, (ctx, match) => {
             // Remove the equals part by getting the captured value only.
-            var value = match[4];
+            var value = match[1];
             var type = 'ATTR';
             if (match[0].toLowerCase() in this.reserved) {
                 type = this.reserved[match[0].toLowerCase()];
@@ -343,33 +343,33 @@ class E3lmLexer {
             ctx.data('paren_level', 0);
             ctx.data('dict_level', 0);
             ctx.data('array_level', 0);
-            var lineno = ctx.info().lineno;
+            var lineno = ctx.info().line;
             this.stack.update('_indent', this.computed["indent"][lineno]);
             ctx.accept(type, value);
         }, 'rule_BLOCK_ATTR');
 
         this.tokenizr.rule('BLOCK', /\-\-\-/g, (ctx, match) => {
-            if (this.tokenizr._pending.length > 0) {
-                if (this.last_token.type == "BODY") {
-                    ctx.skip(1);
-                    ctx.lineno = ctx.lineno + 1;
-                    return
-                }
+            if (this.last_token.type == "BODY") {
+                ctx.ignore();
+                return
             }
             ctx.data('body_start', -1);
             ctx.data('body_start_lineno', -1);
-            var lineno = ctx.lineno;
-            ctx.data('body_indent', this.computed["indent"][lineno + 1])
             var nfo = ctx.info();
+            var lineno = nfo.line;
+            ctx.data('body_indent', this.computed["indent"][lineno + 1]);
             var t = {
                 type: "BODYOPEN",
                 value: "",
                 pos: nfo.pos,
-                lineno: nfo.lineno,
+                line: nfo.line,
                 len: nfo.len,
                 col: nfo.col,
             };
+            //ctx.accept(t.type, t);
+            ctx.ignore();
             this.stack.push(t, {}, "BODY");
+
         }, 'rule_BLOCK_BODYOPEN');
 
         this.tokenizr.rule('BLOCK', /[ \t]/g, (ctx, match) => {
@@ -387,7 +387,7 @@ class E3lmLexer {
                 type: "NAME",
                 value: match[0],
                 pos: nfo.pos,
-                lineno: nfo.lineno,
+                line: nfo.line,
                 len: nfo.len,
                 col: nfo.col,
             };
@@ -396,14 +396,13 @@ class E3lmLexer {
             ctx.accept(t.type, t.value);
         }, 'rule_BLOCK_NAME');
 
-        this.tokenizr.rule('BLOCK', /\n/g, (ctx, match) => {
-            if (this.tokenizr._pending.length > 0) {
-                if (this.last_token.type == "CLSS") {
-                    this.stack.push(this.last_token, {});
-                    this.stack.indent_check = "gt"
-                } else if (this.last_token.type == "NAME") {
-                    // Do nothing
-                }
+        this.tokenizr.rule('BLOCK', this._newline_pattern, (ctx, match) => {
+            if (this.last_token.type == "CLSS") {
+                this.stack.push(this.last_token, {});
+                this.stack.indent_check = "gt"
+            } else if (this.last_token.type == "NAME") {
+                ctx.accept("NEWLINE");
+                return
             }
             ctx.accept('NEWLINE');
         }, 'rule_BLOCK_NEWLINE');
@@ -411,8 +410,8 @@ class E3lmLexer {
         // State: EXPR
 
         this.tokenizr.rule('EXPR', /\\\n/g, (ctx, match) => {
-            ctx.lineno += 1;
-        }, 'rule_EXPR_escape');
+            this.tokenizr._line += 1;
+        }, 'rule_EXPR_escape'); // TODO: TEST
 
         this.tokenizr.rule('EXPR', /\\(.|\n)/g, (ctx, match) => {
             var type;
@@ -421,7 +420,8 @@ class E3lmLexer {
             } else {
                 type = "STRING_CONTINUE";
             }
-            this.tokenizr.lineno += match[0].split("\n").length - 1;
+            this.progress(match[0].split("\n").length - 1); // TODO: TEST
+            nfo = ctx.info();
             ctx.accept(type)
         }, 'rule_SQ1_SQ2_TQ1_TQ2_escapes');
         //#endregion
@@ -430,8 +430,8 @@ class E3lmLexer {
 
         //#region TRIPLEQ1
         this.tokenizr.rule('EXPR', /[bB]?'''/g, (ctx, match) => {
-            ctx.push('TRIPLEQ1')
-            var type = "STRING_START_TRIPLEQ1"
+            ctx.push('TRIPLEQ1');
+            var type = "STRING_START_TRIPLEQ1";
             if (match[0].includes("r") || match[0].includes("R")) {
                 ctx.data("string_raw", true);
             } else {
@@ -443,8 +443,8 @@ class E3lmLexer {
 
         // State: TRIPLEQ1
 
-        this.tokenizr.rule('TRIPLEQ1', /[^'\\]+/g, (ctx, match) => {
-            ctx.lineno += match[0].split("\n").length - 1;
+        this.tokenizr.rule('TRIPLEQ1', /[^']+/g, (ctx, match) => {
+            //this.tokenizr._line += match[0].split("\n").length - 1;
             ctx.accept("STRING_CONTINUE");
         }, 'rule_TRIPLEQ1_simple');
 
@@ -462,8 +462,8 @@ class E3lmLexer {
         
         //#region TRIPLEQ2
         this.tokenizr.rule('EXPR', /[bB]?"""/g, (ctx, match) => {
-            ctx.push('TRIPLEQ2')
-            var type = "STRING_START_TRIPLEQ2"
+            ctx.push('TRIPLEQ2');
+            var type = "STRING_START_TRIPLEQ2";
             if (match[0].includes("r") || match[0].includes("R")) {
                 ctx.data("string_raw", true);
             } else {
@@ -475,8 +475,7 @@ class E3lmLexer {
 
         // State: TRIPLEQ2
 
-        this.tokenizr.rule('TRIPLEQ2', /[^"\\]+/g, (ctx, match) => {
-            ctx.lineno += match[0].split("\n").length - 1;
+        this.tokenizr.rule('TRIPLEQ2', /[^"]+/g, (ctx, match) => {
             ctx.accept("STRING_CONTINUE");
         }, 'rule_TRIPLEQ2_simple');
 
@@ -495,11 +494,12 @@ class E3lmLexer {
         //#region SINGLEQ1
         this.tokenizr.rule('EXPR', /[bB]?"/g, (ctx, match) => {
             this.tokenizr.push('SINGLEQ1')
+            // this.tokenizr.reset();
             var type = "STRING_START_SINGLEQ1"
             if (match[0].includes("r") || match[0].includes("R")) {
-                this.tokenizr.data("string_raw", true);
+                ctx.data("string_raw", true);
             } else {
-                this.tokenizr.data("string_raw", false);
+                ctx.data("string_raw", false);
             }
             var value = match[0].split('"', 1)[0]
             ctx.accept(type, value);
@@ -507,7 +507,7 @@ class E3lmLexer {
 
         // State: SINGLEQ1
 
-        this.tokenizr.rule('SINGLEQ1', /[^"\\\n]+/g, (ctx, match) => {
+        this.tokenizr.rule('SINGLEQ1', /[^"]+/g, (ctx, match) => {
             ctx.accept("STRING_CONTINUE");
         }, 'rule_SINGLEQ1_simple');
 
@@ -523,9 +523,9 @@ class E3lmLexer {
             this.tokenizr.push('SINGLEQ2')
             var type = "STRING_START_SINGLEQ2"
             if (match[0].includes("r") || match[0].includes("R")) {
-                this.tokenizr.data("string_raw", true);
+                ctx.data("string_raw", true);
             } else {
-                this.tokenizr.data("string_raw", false);
+                ctx.data("string_raw", false);
             }
             var value = match[0].split("'", 1)[0]
             ctx.accept(type, value);
@@ -533,7 +533,7 @@ class E3lmLexer {
 
         // State: SINGLEQ2
 
-        this.tokenizr.rule('SINGLEQ2', /[^'\\\n]+/g, (ctx, match) => {
+        this.tokenizr.rule('SINGLEQ2', /[^']+/g, (ctx, match) => {
             ctx.accept("STRING_CONTINUE");
         }, 'rule_SINGLEQ2_simple');
 
@@ -623,7 +623,7 @@ class E3lmLexer {
             ctx.data("dict_level", dict_level - 1);
         }, 'rule_EXPR_RDICT');
 
-        this.tokenizr.rule('EXPR', /\n/g, (ctx, match) => {
+        this.tokenizr.rule('EXPR', this._newline_pattern, (ctx, match) => {
             var paren_level = ctx.data('paren_level');
             var array_level = ctx.data('array_level');
             var dict_level = ctx.data('dict_level');
@@ -639,25 +639,27 @@ class E3lmLexer {
         //#region STATE BODY and eof/error
 
         // State: BODY
-        this.tokenizr.rule('BODY', /\n/g, (ctx, match) => {
+        this.tokenizr.rule('BODY', this._newline_pattern, (ctx, match) => {
             var body_start = ctx.data('body_start');
             var body_start_lineno = ctx.data('body_start_lineno');
             var body_indent = ctx.data('body_indent');
+            var body_tokens = ctx.data('body_tokens');
             var nfo = ctx.info();
-            var body_tokens = "";
-
             if (body_start == -1) {
-                body_start = nfo.pos; ctx.data('body_start', body_start);
-                body_start_lineno = nfo.lineno; ctx.data('body_start_lineno', body_start_lineno);
-                body_tokens = this.computed['text'][body_start_lineno].slice(3);
+                body_start = nfo.pos;
+                body_start_lineno = nfo.line;
+                body_tokens = this.computed['text'][body_start_lineno - 1];
+                if (body_tokens != null) {body_tokens = body_tokens.slice(3); }
+                ctx.data('body_start', body_start);
+                ctx.data('body_start_lineno', body_start_lineno);
                 ctx.data('body_tokens', body_tokens);
             }
-
-            var starting_indent = this.computed['indent'][body_start_lineno];
-            var ahead_indent = this.computed['indent'][body_start_lineno + 1];
-            var prev_text = this.computed['text'][body_start_lineno - 1];
-            var curr_text = this.computed['text'][body_start_lineno];
-            var ahead_text = this.computed['text'][body_start_lineno + 1];
+            var starting_indent = this.computed['indent'][body_start_lineno - 1];
+            var ahead_indent = this.computed['indent'][nfo.line + 1];
+            var prev_text = this.computed['text'][nfo.line - 1];
+            var curr_text = this.computed['text'][nfo.line];
+            var ahead_text = this.computed['text'][nfo.line + 1];
+            ahead_text = ahead_text ? ahead_text : "";
             var close = false;
             var add = "";
 
@@ -669,57 +671,66 @@ class E3lmLexer {
             if (!close && prev_text.startsWith("---")) {
                 if (ahead_text.startsWith("---")) {
                     close = true;
-                    tpos = nfo.pos + 0 - 1;
+                    tpos = nfo.pos;
                     add = "0";
                 }
-            } else if (!close && ahead_text.startsWith("---")) {
+            } else if (!close && (ahead_text.startsWith("---"))) {
                 close = true;
-                tpos = nfo.pos + 0 - 1;
+                // Get last character for newline.
+                tpos = nfo.pos;
             }
-
+            
             if (!close) {
                 if (ahead_indent < starting_indent) {
                     if (ahead_text.startsWith("---") != true && ahead_text != "\n") {
                         close = true;
                         if (curr_text != "\n") {
-                            tpos = nfo.pos + 0 - 1;
+                            tpos = nfo.pos;
                             add = "0";
                         } else {
-                            add = this.computed["indent"][nfo.lineno-1] + " " + this.computed["text"][nfo.lineno-1];
+                            add = " ".repeat(this.computed["indent"][nfo.line-1]) + this.computed["text"][nfo.line-1];
                             tpos = nfo.pos;
                         }
                     }
                 }
             }
-
+            
             if (close) {
-                var bvalue = bodify_indents(this.lexdata.slice(body_start, tpos), body_indent)
+                nfo = ctx.info();
+                var bbody = this.lexdata.slice(body_start, tpos+1);
+                var bvalue = this.bodify_indents(bbody, body_indent)
                 var type = "BODY";
                 var btokens = body_tokens.split(",");
-                ctx.pop();
-                ctx.lineno += 1;
-                ctx.pos -= 1;
                 var _skip = add.length; if (_skip == 0) _skip = 1;
-                ctx.skip(_skip);
-                ctx.data("body_order", -1);
-                ctx.accept(type, {
-                    "start_lineno": body_start_lineno,
-                    "value": bvalue,
-                    "tokens": btokens,
-                });
+                this.progress(_skip);
+                ctx.accept(type, bvalue);
+                ctx.pop();
+                this.stack.pop();
+                nfo = ctx.info();
+                this.tokenizr._pending[0].tokens = btokens;
+                this.tokenizr._pending[0].endline = this.tokenizr._pending[0].line;
+                this.tokenizr._pending[0].line = body_start_lineno;
                 ctx.data("body_tokens", null);
+                ctx.data("body_start", null);
+                ctx.data("body_start_lineno", null);
+            } else {
+                // NEWLINE...
+                ctx.ignore();
+                this.progress(this.computed["lengthx"][nfo.line]);
             }
-            ctx.lineno += 1;
-        })
+
+            nfo = ctx.info();
+
+        }, 'rule_BODY_NEWLINE');
 
         this.tokenizr.rule('BODY', /.+/g, (ctx,match) => {
-            //
+            ctx.ignore();
         }, 'rule_BODY_text');
 
         //#endregion
 
-        //this.tokenizr.rule('EXPR', regexes.Imagnumber, (ctx, match) => {
-        //}, 'rule_EXPR_escape');
+        // this.tokenizr.rule('EXPR', regexes.Imagnumber, (ctx, match) => {
+        // }, 'rule_EXPR_escape'); // TODO: ENABLE
 
         //#endregion
 
@@ -747,23 +758,30 @@ class E3lmLexer {
         });
     }
 
-    raise_error = (ctx, type="LexError", message="") => {
-        if (typeof ctx == Tokenizr) {
-            var info = ctx.info();
-            throw Error(type+"!", info.lineno);
-        } else if (ctx.hasOwnProperty("value")) { // It's a token
-            throw Error(type+ctx.type+"!", ctx.lineno)
-        }
+    raise_error = (ctx, type="LexError", message="", details={}) => {
+        var e = Error();
+        e.type = type;
+        e.message = message;
+        e.source = this.source;
+        e.line = this.tokenizr._line || ctx.info().line || -1 ;
+        if (details.length > 0) {e.extra = details;}
+        throw e;
+    }
+
+    progress = (nchar) => {
+        this.tokenizr._progress(this.tokenizr._pos, this.tokenizr._pos + nchar);
+        this.tokenizr._pos += nchar;
     }
 
     input = (data, source="<string>", debug=false) => {
         this.lexdata = data;
         this.source = source;
         this.debug = debug;
-        this.tokenizr.lineno = 0;
-        this.tokenizr.e3lm_lexer = this;
+        this.tokenizr.reset();
+        // this.tokenizr.e3lm_lexer = this;
         this.tokenizr.input(this.lexdata);
         this.tokenizr.debug(false);
+        this.tokenizr.state(this.default_state);
         this.token_stream = this.make_token_stream();
         this.current_token = null;
         this.compute_input(data);
@@ -836,60 +854,71 @@ class E3lmLexer {
             offsets.push(match.index + match[0].length + 1);
         }
         this.line_offsets = offsets;
-    }
-
-    make_token_stream = () => {
-        var me = this;
-        var gen = function* (me) {
-            var t = me.tokenizr.token();
-            t = filter_strings(t);
-            yield t
-        };
-        return gen;
-    }
-
-    filter_strings = function* (tokgen) {
-        var tok = tokgen.next();
-        if (tok.type.startsWith("STRING_START_")) {
-            yield tok;
+        
+        this.computed["lengthx"] = [];
+        for (var m=0; m < this.computed["text"].length; m++) {
+            this.computed["lengthx"].push(
+                this.computed["text"][m].endsWith("\n") ? this.computed["text"][m].length : this.computed["text"][m].length+1
+                + this.computed["indent"][m]
+                + (this.computed["comment"][m] ? this.computed["comment"][m].length : 0)
+            );
         }
-        start_tok = tok;
-        string_toks = [];
-        var fin = false;
-        tok = tokgen.next();
-        while (tok.type != "STRING_END") {
-            if (tok.type.startsWith("STRING_CONTINUE")) {
-                string_toks.append(tok);
-            } else {
-                fin = true;
+    }
+
+    filter_strings = function* (toks) {
+        var tok;
+        for (tok of toks) {
+            if (!(tok.type.startsWith("STRING_START_"))) {
+                yield tok;
+                continue;
             }
-            tok = tokgen.next();
+            var start_tok = tok;
+            var string_toks = [];
+            var fin = false;
+            while (true) {
+                tok = toks.get_next();
+                if (tok.type == "STRING_END") {
+                    fin = true;
+                    break;
+                } else {
+                    if (tok.type.startsWith("STRING_CONTINUE")) {
+                        string_toks.push(tok);
+                    } else {
+                        fin = true;
+                    }
+                }
+                if (tok == undefined) {break;}
+            }
+            if (!fin) {
+                this.raise_error(this.tokenizr, type="SyntaxError", message="EOF while scanning string");
+            }
+            
+            if (start_tok.type.includes("SINGLE")) {
+                start_tok.line = tok.line;
+            }
+            
+            start_tok.quotes = start_tok.type.slice(13);
+            start_tok.quote = start_tok.text;
+            start_tok.type = "STRING";
+            start_tok.value = this.convert_string(start_tok, string_toks);
+            start_tok.value_quoted = start_tok.quote + start_tok.value + start_tok.quote;
+            start_tok.text = start_tok.value
+            yield start_tok;
         }
-        if (!fin) {
-            this.raise_error(this.tokenizr, type="SyntaxError", message="EOF while scanning string");
-        }
-
-        if (start_tok.type.includes("SINGLE")) {
-            start_tok.lineno = tok.lineno;
-        }
-
-        start_tok.quotes = start_tok.type.slice(13);
-        start_tok.type = "STRING";
-        start_tok.value = this.convert_string(start_tok, string_toks);
-        yield start_tok;
-    }
+    };
 
     convert_string = (start_tok, string_toks) => {
         var i = 0;
-        string_toks.forEach(tok => {
+        for (i=0; i<string_toks.length; i++) {
+            var tok = string_toks[i];
             if (tok.type == "STRING_CONTINUE_NEWLINE") {
                 if (i+1 < string_toks.length) {
                     string_toks[i+1].value = string_toks[i+1].value.replace(/^[ \t]+/,"");
                 }
                 delete string_toks[i];
             }
-        })
-        var s = (string_toks.map((t) => {t.value})).join("");
+        };
+        var s = (string_toks.map(t => t.value)).join("");
         var quote_type = start_tok.value.toLowerCase();
         if (quote_type == "") {
             return s;
@@ -901,63 +930,107 @@ class E3lmLexer {
         throw 'Unknown string quote type: "' + quote_type + '".';
     }
 
-    post_token = function* (tokgen) {
-        var tok = tokgen.next();
-        console.log("Filtering post_token of " + tok.type);
-        if (!tok) {
-            if (this.debug) {
-                this.print_method("NO TOK!", "WARNING");
-            }
-            return;
-        }
-        if (tok.type == "NEWLINE") {
-            this.tokenizr.lineno += 1;
-        }
-
-        if (this.last_token) {
-            this.check_tokens.forEach((check) => {
-                if (this.last_token.type.endsWith(check["tokens"][0])) {
-                    if (check["tokens"][1].includes(tok.type)) {
-                        this.raise_error(this.tokenizr, type="SyntaxError", message=check["message"]);
-                    }
+    post_token = function* (toks) {
+        var tok;
+        for (tok of toks) {
+            if (!tok) {
+                if (this.debug) {
+                    this.print("No tokens found!", "ERROR"); // STRING
                 }
-            });
-        }
+                yield null;
+                break;
+            }
+            if (tok.type == "NEWLINE") {
+                // Here the tokenizr doesn't require a line increment.
+            }
 
-        if (!(["WS", "NEWLINE",].includes(tok.type))) {
-            this.last_token = tok;
-        }
-        if (["ATTR",].includes(tok.type)) {
-            this.stack.follow_indent(tok);
-        }
+            if (this.last_token) {
+                this.check_tokens.forEach((check) => {
+                    if (this.last_token.type.endsWith(check["tokens"][0])) {
+                        if (check["tokens"][1].includes(tok.type)) {
+                            this.raise_error(this.tokenizr, type="SyntaxError", message=check["message"]);
+                        }
+                    }
+                });
+            }
 
-        var inds = this.computed["indent"][tok.lineno];
-        if (this.debug) {
-            // NOTE: COPY FROM LEXER.PY:906
-        }
+            if (!(["WS", "NEWLINE",].includes(tok.type))) {
+                this.last_token = tok;
+            }
+            if (["ATTR",].includes(tok.type)) {
+                this.stack.follow_indent(tok);
+            }
 
-        if (!(["WS", "NEWLINE",].includes(tok.type))) {
-            yield tok;
-        } else {
+            if (!(["WS", "NEWLINE",].includes(tok.type))) {
+                yield tok;
+                continue;
+            } else {
+                continue;
+            }
         }
+    };
+
+    make_token_stream = function () {
+        var me = this;
+        const myIterable = {};
+        myIterable[Symbol.iterator] = function* () {
+            var xx = me.tokenizr.token();
+            while (xx != null) {
+                yield xx
+                var xx = me.tokenizr.token();
+            }
+        };
+        myIterable["get_next"] = function() {
+            var xx = me.tokenizr.token();
+            return xx;
+        }
+        var x = this.post_token(this.filter_strings(myIterable));
+        return x;
     }
 
     token = function* () {
         this.p_one = this.current_token;
-        this.current_token = this.token_stream();
-        if (this.current_token.done) {
-            yield null;
+        var ts, ct;
+        ct = this.token_stream.next();
+        while (ct != null && (ct.done !== true)) {
+            var t = ct.value;
+            this.current_token = t;
+            ct = this.token_stream.next();
+            yield t;
         }
-        yield this.current_token;
         /*  no more tokens  */
-        return null;
+        yield null;
+    };
+
+    print_token = (t, offset=-1) => {
+        var val = COLORS["D"](String(t.type != "BODY" ? (t.value_quoted ? t.value_quoted : t.value) : (t.value)) + "");
+        val = val.replace(/\n/g, "\\n")
+        val = val.substr(0, 71)!=val ? val.substr(0, 71)+"..." : val;
+
+        this.print(" ".repeat(1+this.computed["indent"][t.line-1]
+            + (offset == t.line ? 1 : 0)) + COLORS["B"]("T ") + COLORS["C"](String(t.type)
+            + ((t.value) ? (COLORS["GRAY"](" = ") + val) : " = null"))
+            // + "]#red["+ String(t.type == "BODY" ? String(t.endline) : "") + "]"
+        );
     }
 
-    tokens = () => {
-        const result = [];
-        let token;
-        while ((token = this.token()) !== null)
-            result.push(token);
+    get_tokens = () => {
+        var result = [];
+        var token;
+        var gen = this.token();
+        // this.print("get_tokens:");
+        var cline = 0;
+        while ((token = gen.next()).done !== true)
+            {
+            var t = token.value;
+            if (t && t.hasOwnProperty("type")) {
+                result.push(t);
+                if (!(["NEWLINE", "WS", "EOF"].includes(t.type))) {
+                    this.print_token(t, cline)
+                    cline = t.line;
+                    }
+                }
+            }
         return result;
     };
 
@@ -965,14 +1038,33 @@ class E3lmLexer {
         this.input(data, source, debug=debug);
         if (token_map) {
             var _tokens = [];
-            var toks = this.tokens();
+            var toks = this.get_tokens();            
             toks.forEach((token) => {
                 _tokens.push(token)
             });
             return _tokens;
         } else {
-            return this.tokenizr.tokens;
+            return this.get_tokens;
         }
+    }
+
+    bodify_indents = (string, indents) => {
+        if (string) {
+            //console.log(string);
+            string = string.split("\n");
+            var s, j;
+            var new_strings = []
+            for (s of string) {
+                var ss = s.slice(0, indents+1);
+                j = 0;
+                for (const [i,ch] of Object.entries(ss)) {
+                    if (!([" ", " ", "\t"].includes(ch))) { j=i; break; } else {j+=1; }
+                }
+                new_strings.push(s.slice(j));
+            }
+            return new_strings.join("\n");
+        }
+        return string;
     }
 };
 

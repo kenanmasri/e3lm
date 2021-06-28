@@ -32,12 +32,13 @@ def lex(text, source=None, lexer=None, token_map=True, **kwargs):
     l.build(**kwargs)
     l.input(text, srs)
     if token_map:
+        tokens = l.get_tokens()
         tokmap = []
-        for tok in l:
+        for tok in tokens:
             tokmap.append(tok)
         return tokmap
     else:
-        return l
+        return l.token
 
 
 def parse(text,

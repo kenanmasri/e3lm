@@ -7,7 +7,6 @@ from asciitree.drawing import BoxStyle
 COLORS = {
     # Default...
     "NONE": u"",
-    "GRAY": u'\x1b[38;5;245m',
     "HEADER": u'\x1b[95m',
     "INFO": u'\x1b[38;5;164m',
     "INFO2": u'\x1b[38;5;172m',
@@ -30,7 +29,6 @@ COLORS = {
     "STRIKE": u'\x1b[9m',
     "ENDC": u'\x1b[0m',
     "R": u'\x1b[0m',
-    "RESET": u'\x1b[0m',
     # From CLI...
     "H": u'\x1b[95m',  # HEADER
     "1": u'\x1b[38;5;164m',  # FIRST
@@ -42,6 +40,18 @@ COLORS = {
     "R": u'\x1b[0m',  # RESET
     "B": u'\x1b[1m',  # BOLD
     "U": u'\x1b[4m',  # UNDERLINE
+
+    "RESET": u'\x1b[0m',
+    "GRAY": u'\x1b[38;5;245m',
+
+    "A": u'\x1b[38;5;164m',  # A
+    "B": u'\x1b[38;5;173m',  # B
+    "C": u'\x1b[38;5;177m',  # C
+    "D": u'\x1b[38;5;225m',  # D
+    "E": u'\x1b[95m',        # E
+    "LOG": u'\x1b[38;5;164m',  # LOGGING TAG
+    "LOG_MSG": u'\x1b[38;5;245m',  # LOGGING MESSAGE
+    "ERROR": u'\x1b[91m',  # ERROR
 }
 
 

@@ -33,8 +33,8 @@ def raise_lex_error(t, message, type=IndentationError, file=None, details={}):
     """
     if file is None:
         file = t.lexer.source
-    # print_method = t.lexer.e3lm_lexer.print_method
-    # print_method(t, "ERROR")
+    # print = t.lexer.e3lm_lexer.print
+    # print(t, "ERROR")
     lineno = t.lineno
     if 'lineno' in details.keys():
         lineno = details['lineno']
@@ -48,7 +48,7 @@ def raise_lex_error(t, message, type=IndentationError, file=None, details={}):
         end = start
     offset = t.lexpos - start + 1
 
-    # print_method(message, 'ERROR')
+    # print(message, 'ERROR')
     if type == IndentationError:
         details = {}
     raise type(message, (file, lineno, offset, t.lexer.lexdata[start:end]),
@@ -98,9 +98,7 @@ def bodify_indents(string, indents):
         for s in string:
             i = 0
             for i, ch in enumerate(s[0:indents+1]):
-                try:
-                    assert ch in (" ", "\t")
-                except:
+                if ch not in (" ", "\t"):
                     break
             new_strings.append(s[i:])
 
@@ -200,7 +198,7 @@ class LexStack():
             `IndentationError`: If recorded indents do not match
                 that of the token's.
         """
-        lineno = t.lineno - 1
+        lineno = t.lineno
         indents = self.lexer.computed["indent"][lineno]
         if hasattr(self, '_indent_gt'):
             req_indents = self._indent_gt
@@ -287,7 +285,7 @@ class E3lmLexer():
         `compute_pattern_inds`: A dict that defines `compute_pattern` indices.
         `_newline_pattern`: Newline regex pattern.
         `debug`: Whether debug mode.
-        `print_method`: Print method used to print debug output.
+        `print`: Print method used to print debug output.
         `states`: Lexer states.
         `reserved`: Reserved keywords.
         `tokens`: Lexer tokens.
@@ -311,17 +309,23 @@ class E3lmLexer():
     }
     _newline_pattern = re.compile(r"\n")
     debug = False
-    print_method = printers._print
+
+    def print(self, text, *args):
+        return printers._print(
+            self.COLORS["LOG"] + "LOG "
+            + self.COLORS["LOG_MSG"]
+            + text + self.COLORS["RESET"]
+        , *args)
 
     # --- States ---
     states = (
-        ("BLOCK", "exclusive"),
-        ("BODY",  "exclusive"),
-        ("EXPR",  "exclusive"),  # Expression tokens
-        ("SINGLEQ1",  "exclusive"),  # string expression '
-        ("SINGLEQ2",  "exclusive"),  # string expression "
-        ("TRIPLEQ1",  "exclusive"),  # string expression '''
-        ("TRIPLEQ2",  "exclusive"),  # string expression """
+        ("BLOCK", "inclusive"),
+        ("BODY",  "inclusive"),
+        ("EXPR",  "inclusive"),  # Expression tokens
+        ("SINGLEQ1",  "inclusive"),  # string expression '
+        ("SINGLEQ2",  "inclusive"),  # string expression "
+        ("TRIPLEQ1",  "inclusive"),  # string expression '''
+        ("TRIPLEQ2",  "inclusive"),  # string expression """
     )
 
     # --- Reserved keywords ---
@@ -351,7 +355,7 @@ class E3lmLexer():
     ## re_nondigit        = r'(' + nondigit_char + r')'
     ## re_uppercased      = r'(' + uppercased_char + r')'
     re_identifier = r'(' + identifier_char + r'*)'
-    re_class_def = r'(' + class_name_char + r"* " + \
+    re_class_def = r'(' + class_name_char + r"*)[ \t]*(" + \
         identifier_char + r"*)"
 
     # r'[-+]?[0-9]+(\.([0-9]+)?([eE][-+]?[0-9]+)?|[eE][-+]?[0-9]+)'
@@ -416,13 +420,17 @@ class E3lmLexer():
 
     @plylex.TOKEN(re_class_def)
     def t_CLSS(self, t):
+        match = t.lexer.lexmatch
+        t.value = match.group(3) # 3 is always first in plylex
+        t.value += ("#" + match.group(4)) if match.group(4) else ""
         t.lexer.push_state('BLOCK')
         return t
 
-    @plylex.TOKEN(re_identifier)
-    def t_ID(self, t):
-        t.type = self.reserved.get(t.value.lower(), 'ID')
-        return t
+    # Unnecessary tokenization
+    # @plylex.TOKEN(re_identifier)
+    # def t_ID(self, t):
+    #     t.type = self.reserved.get(t.value.lower(), 'ID')
+    #     return t
 
     # - BLOCK state
 
@@ -430,12 +438,11 @@ class E3lmLexer():
         r'[eE][nN][dD](.*)'
         t.type = "END"
         t.check_indents = True
-        t.lexer.pop_state()
-        self.stack.pop()
+        self.stack.pop(True)
         self.stack.indent_check = "lt"
         return t
 
-    @plylex.TOKEN(re_identifier + r'\s?\=\s?')
+    @plylex.TOKEN(re_identifier + r'\s*\=\s*')
     def t_BLOCK_ATTR(self, t):
         # Remove the equals part by getting the captured value only.
         match = t.lexer.lexmatch
@@ -455,8 +462,8 @@ class E3lmLexer():
     def t_BLOCK_BODYOPEN(self, t):
         r'\-\-\-'
         if t.lexer.last_token.type == "BODY":
-            t.lexer.skip(1)
-            t.lexer.lineno += 1
+            # t.lexer.skip(1)
+            # t.lexer.lineno += 1
             return
 
         t.lexer.body_start = -1
@@ -519,7 +526,7 @@ class E3lmLexer():
         return t
 
     def t_TRIPLEQ1_simple(self, t):
-        r"[^'\\]+"
+        r"[^']+"
         t.type = "STRING_CONTINUE"
         t.lexer.lineno += t.value.count("\n")
         return t
@@ -546,7 +553,7 @@ class E3lmLexer():
         return t
 
     def t_TRIPLEQ2_simple(self, t):
-        r'[^"\\]+'
+        r'[^"]+'
         t.type = "STRING_CONTINUE"
         t.lexer.lineno += t.value.count("\n")
         return t
@@ -699,10 +706,10 @@ class E3lmLexer():
         if t.lexer.body_start == -1:
             t.lexer.body_start = t.lexer.lexpos
             t.lexer.body_start_lineno = t.lexer.lineno
-            t.lexer.body_tokens = t.lexer.computed['text'][t.lexer.lineno][3:]
+            t.lexer.body_tokens = t.lexer.computed['text'][t.lexer.lineno - 1][3:]
 
         starting_indent = t.lexer.computed['indent'][
-            t.lexer.body_start_lineno
+            t.lexer.body_start_lineno - 1
         ]
         ahead_indent = t.lexer.computed['indent'][t.lineno+1]
         prev_text = t.lexer.computed['text'][t.lineno-1]
@@ -717,20 +724,19 @@ class E3lmLexer():
         if not close and prev_text.startswith("---"):
             if ahead_text.startswith("---"):
                 close = True
-                tpos = t.lexer.lexpos + 0 - 1
+                tpos = t.lexer.lexpos# + 0 - 1
                 add = "0"
-            else:
-                pass
+
         elif not close and ahead_text.startswith("---"):
             close = True
-            tpos = t.lexer.lexpos + 0 - 1
+            tpos = t.lexer.lexpos# + 0 - 1
 
         if not close:
             if ahead_indent < starting_indent:
                 if not ahead_text.startswith("---") and ahead_text != "\n":
                     close = True
                     if not curr_text == '\n':
-                        tpos = t.lexer.lexpos + 0 - 1
+                        tpos = t.lexer.lexpos# + 0 - 1
                         add = "0"
                     else:
                         add = t.lexer.computed['indent'][t.lineno-1]*" " + \
@@ -738,20 +744,25 @@ class E3lmLexer():
                         tpos = t.lexer.lexpos
 
         if close:
-            t.value = bodify_indents(t.lexer.lexdata[t.lexer.body_start:tpos],
+            t.value = bodify_indents(t.lexer.lexdata[t.lexer.body_start:tpos-1],
                                      t.lexer.body_indent
                                      )
             t.type = "BODY"
-            t.start_lineno = t.lexer.body_start_lineno
-            t.lexer.pop_state()
-            self.stack.pop()
-            t.lexer.lineno += 1  # The looked ahead line, plus its newline
+            t.endline = t.lexer.lineno
+            t.lineno = t.lexer.body_start_lineno
+            t.lexer.lineno += 1
+            t.lexer.lexpos += len(add) or 1
             t.lexer.lexpos -= 1
-            t.lexer.skip(len(add) or 1)
-            t.lexer.body_order = -1
-            t.body_tokens = t.lexer.body_tokens.split(",")
+            t.tokens = t.lexer.body_tokens.split(",")
             t.lexer.body_tokens = None
+            t.lexer.body_start = -1
+            t.lexer.body_start_lineno = -1
+            t.lexer.ahead_indent = -1
+            self.stack.pop(True)
             return t
+        else:
+            # NEWLINE...
+            pass
 
         t.lexer.lineno += 1
 
@@ -760,8 +771,8 @@ class E3lmLexer():
 
     # - Other
     def t_error(self, t):
-        message = "Illegal character '%s'."
-        raise_lex_error(t, message % (t.value[0]), type=SyntaxError,)
+        message = "Illegal character '%s' at %s."
+        raise_lex_error(t, message % (t.value[0], t.lexpos), type=SyntaxError,)
 
     t_BODY_error = t_error
     t_BLOCK_error = t_error
@@ -808,10 +819,11 @@ class E3lmLexer():
         """
         if 'debug' in kwargs.keys():
             self.debug = kwargs.pop('debug')
-        self.print_method = printers._print
+
+        self.COLORS = {x: "" for x,y in printers.COLORS.items()}
         if 'enable_colors' in kwargs.keys():
             if kwargs.pop('enable_colors') == True:
-                self.print_method = printers.cprint
+                self.COLORS = printers.COLORS
         if 'lex_kwargs' not in kwargs.keys():
             kwargs['lex_kwargs'] = {}
         self.lexer = plylex.lex(module=self, debug=(self.debug >= 2),
@@ -832,6 +844,41 @@ class E3lmLexer():
             return self.current_token
         except StopIteration:
             return None
+
+    def progress(self, amount):
+        l = self.lexer
+        ll = l.lineno
+        lx = l.computed["lengthx"][ll]
+        l.lexpos += amount
+        return l.lexpos
+
+    def print_token(self, token, offset=-1):
+        C = self.COLORS
+        val = C["D"] + str((token.value_quoted \
+            if hasattr(token, "value_quoted") else token.value) \
+                if token.type != "BODY" else token.value
+        )
+        val = val.replace("\n", "\\n")
+        val = (val[0:71] + "...") if val[0:71] != val else val
+        self.print(" " * ( 1
+                    + self.lexer.computed["indent"][token.lineno]
+                    + (1 if offset == token.lineno else 0)
+                ) + C["B"] + "T " + C["C"] + str(token.type) + (" = "
+                    + C["D"] + str(val)) if token.value else " = null"
+            )
+
+    def get_tokens(self):
+        token = self.token()
+        result = []
+        cline = 0
+        while (token != None):
+            if token and hasattr(token, "type"):
+                result.append(token)
+                if (token.type not in ("NEWLINE", "WS",)):
+                    self.print_token(token, cline)
+                    cline = token.lineno
+            token = self.token()
+        return result
 
     def __iter__(self):
         return self.token_stream
@@ -881,7 +928,7 @@ class E3lmLexer():
         for tok in toks:
             if not tok:
                 if debug:
-                    self.print_method("NO TOK!", "WARNING")
+                    self.print("No tokens found!", "COLERR") # STRING
                 break
             if tok.type == "NEWLINE":
                 lexer.lineno += 1
@@ -902,25 +949,6 @@ class E3lmLexer():
             if tok.type in ("ATTR",):
                 self.stack.follow_indent(tok)
 
-            inds = lexer.computed["indent"][tok.lineno]
-            if self.debug:
-                if tok.type == "BODY":
-                    inds = lexer.computed["indent"][tok.start_lineno]
-                    self.print_method(" "*inds+str((tok.type,
-                                                    tok.value.replace(
-                                                        "  ", " "),
-                                                    tok.lineno,
-                                                    tok.lexpos)))
-                elif tok.type in ("WS", "NEWLINE",):
-                    if self.debug > 2:
-                        self.print_method(" "*inds+str(
-                            (tok.type, tok.value, tok.lineno, tok.lexpos))
-                        )
-                else:
-                    self.print_method(" "*inds+str(
-                        (tok.type, tok.value, tok.lineno, tok.lexpos))
-                    )
-
             if tok.type not in ("NEWLINE", "WS",):
                 yield tok
                 continue
@@ -929,6 +957,7 @@ class E3lmLexer():
 
     def input(self, data, source="<string>"):
         """Create token stream and compute data."""
+        data = "\n" + data
         self.token_stream = self.make_token_stream(self.lexer)
         self.lexer.lineno = 0
         self.lexer.e3lm_lexer = self
@@ -1008,6 +1037,17 @@ class E3lmLexer():
             offsets.append(m.end())
 
         self.lexer.line_offsets = offsets
+
+        self.lexer.computed["lengthx"] = []
+        for m in range(len(self.lexer.computed["text"])):
+            x = self.lexer.computed["text"][m]
+            y = self.lexer.computed["indent"][m]
+            z = self.lexer.computed["comment"][m]
+            self.lexer.computed["lengthx"].append(len(x) \
+                if x.endswith("\n") else len(x+" "))
+            self.lexer.computed["lengthx"][m] += y
+            self.lexer.computed["lengthx"][m] += len(z) if z else 0
+            
 
     def find_column(self, input, token):
         """Compute column where `input` is a text string."""
