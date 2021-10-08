@@ -1,0 +1,25 @@
+{
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [{
+			"label": "autopep8 current file",
+			"type": "process",
+			"command": "${config:python.pythonPath}",
+			"args": ["-m", "autopep8", "--in-place", "${file}"],
+			"isBackground": true,
+		  }
+		]
+	},
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"python.terminal.activateEnvironment": false,
+		"python.pythonPath": "venv\\Scripts\\python.exe",
+		"[python]": {
+			"editor.rulers": [79]
+		},
+	}
+}
