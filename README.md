@@ -23,7 +23,7 @@ Whether you are a scientist, a programmer or an educator, 3LM can be useful for 
 
 ### Installation from Github
 ```bash
-$ pip install git+https://github.com/kenanmasri/e3lm.git#egg=e3lm
+$ pip install git+https://github.com/kenanmasri/3lm.git#egg=e3lm
 ```
 
 ### Installation through PyPI
