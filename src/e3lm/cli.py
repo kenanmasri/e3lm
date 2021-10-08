@@ -62,18 +62,17 @@ CLI_PLUGINS = [
     "parse",
 ] # Plugins that are not E3lmPlugin
 
-quiet = None
-verbose = None
-verbose = None
-verbose_lvl = None
+quiet = False
+verbose = "INFO"
+verbose_lvl = 2
 input_file = None
 demos = []
 plugins = []
-nocolors = None
-noglyph = None
-formatstyle = None
-benchmarking = None
-benchmarking_mods = None
+nocolors = False
+noglyph = False
+formatstyle = "DEFAULT"
+benchmarking = False
+benchmarking_mods = {"enabled": False}
 
 def windows_enable_ANSI(std_id):
     """Enable Windows 10 cmd.exe ANSI VT Virtual Terminal Processing."""
