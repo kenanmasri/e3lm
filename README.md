@@ -8,6 +8,8 @@ Have fun while learning!
 
 ## So what is this exactly?
 
+### This is an attempt at creating a markup language.
+
 3LM is a structure language parsed in Python.
 
 It is used for defining hierarchial objects, intended mainly to help write structured content fast and with ease.
