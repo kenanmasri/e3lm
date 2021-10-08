@@ -515,7 +515,7 @@ def BENCHMARK(input_file):
     exit(0)
 
 
-if __name__ == "__main__":
+def main():
     e3lm_parser = argparse.ArgumentParser(prog='e3lm',
                                           usage='%(prog)s [options] file',
                                           description=__doc__,
@@ -653,3 +653,7 @@ if __name__ == "__main__":
     else:
         # --- Actual program ---
         CLI(input_file)
+
+
+if __name__ == "__main__":
+    main()
