@@ -173,6 +173,144 @@ def caller(the_call, _type="subprocess", shell=True, ret=False, stdout=-1, stder
 
 def main():
 
+    e3lm_parser = argparse.ArgumentParser(prog='e3lm',
+                                          usage='%(prog)s [options] file',
+                                          description=__doc__,
+                                          formatter_class=argparse.RawTextHelpFormatter,
+                                          epilog=__doc2__)
+
+    e3lm_parser.add_argument('--version', action="version",
+                             version="e3lm CLI v" + __version__ + " (3lm language)")
+
+    e3lm_parser.add_argument('file',
+                             nargs='?',
+                             default='-',
+                             help='path to the 3lm file (automatically detects extension) or - for nothing',
+                             )
+
+    e3lm_parser.add_argument('-q',
+                             '--quiet',
+                             action='store_true',
+                             dest='quiet',
+                             default=False,
+                             help='run quietly without any output')
+
+    e3lm_parser.add_argument('-nc',
+                             '--no-color',
+                             action='store_true',
+                             dest="nocolors",
+                             default=False,
+                             help='set output to be without ANSI colors')
+
+    e3lm_parser.add_argument('-ng',
+                             '--no-glyph',
+                             action='store_true',
+                             dest="noglyph",
+                             default=False,
+                             help='use non-glyph character to avoid encoding issues')
+
+    e3lm_parser.add_argument('-v',
+                             '--verbose',
+                             action='store',
+                             metavar='NONE|ERROR|INFO|DEBUG',
+                             dest='verbose',
+                             type=str,
+                             choices=["NONE", "ERROR", "INFO", "DEBUG"],
+                             default="INFO",
+                             help='filter output messages (default is INFO)')
+
+    e3lm_parser.add_argument('-i',
+                             '--interactive',
+                             action='store_true',
+                             default=False,
+                             help='execute with interactive mode')
+
+    e3lm_parser.add_argument('-p',
+                             '--plugin',
+                             action='store',
+                             metavar='plugin',
+                             type=str,
+                             default="",
+                             nargs="+",
+                             help='interpret using plugin(s). see below')
+
+    e3lm_parser.add_argument('-d',
+                             '--demo',
+                             dest='demo',
+                             metavar="code<n>",
+                             action='store',
+                             nargs='+',
+                             type=str,
+                             help='interpret demos in addition'
+                             )
+
+    e3lm_parser.add_argument('-b',
+                             '--benchmark',
+                             metavar='N',
+                             dest='benchmarking',
+                             default=False,
+                             action=arg_required_length(0, 2),
+                             nargs="*",
+                             help="Benchmark N number of times [and N times length of code]",
+                             )
+
+    e3lm_parser.add_argument('-fs',
+                             '--formatstyle',
+                             action='store',
+                             metavar='DEFAULT|MIN|COMPATIBLE',
+                             dest='formatstyle',
+                             type=str,
+                             choices=["DEFAULT", "MIN", "COMPATIBLE"],
+                             default="DEFAULT",
+                             help='Formatting of the output messages',
+                             )
+
+    # For passing BENCHMARK to subprocess to modify length of codes.
+    e3lm_parser.add_argument('--benchmark-mods',
+                             dest='benchmarking_mods',
+                             required=False, type=str,
+                             help=argparse.SUPPRESS)
+
+    args = e3lm_parser.parse_args()
+
+    quiet = args.quiet
+    if quiet:
+        verbose = "NONE"
+    verbose = args.verbose.upper()
+    verbose_lvl = 1 if verbose == "ERROR" else 2 if verbose == "INFO" else 3 if verbose == "DEBUG" else 0
+    input_file = args.file
+    demos = args.demo or []
+    plugins = args.plugin or []
+    nocolors = args.nocolors
+    noglyph = args.noglyph
+    formatstyle = args.formatstyle
+
+    if nocolors:
+        COLORS = {k: "" for k in COLORS.keys()}
+    benchmarking = args.benchmarking
+    benchmarking_mods = args.benchmarking_mods
+    if benchmarking_mods == None:
+        benchmarking_mods = {}
+        benchmarking_mods["enabled"] = False
+    else:
+        benchmarking_mods = benchmarking_mods.split(",")
+        benchmarking_mods = {b.split('=')[0]: b.split(
+            '=')[1] for b in benchmarking_mods}
+        benchmarking_mods["enabled"] = True
+
+    # --- Check if benchmarking ---
+    if benchmarking != False:
+        if type(benchmarking) == list:
+            if len(benchmarking) == 0:
+                benchmarking = [1, 1, ]
+            elif len(benchmarking) == 1:
+                benchmarking.append(1)
+        if benchmarking[0] != 0 and benchmarking[1] != 0:
+            BENCHMARK(input_file)
+    else:
+        # --- Actual program ---
+        CLI(input_file)
+
     def CLI(input_file="-"):
         """The actual CLI."""
 
@@ -514,144 +652,6 @@ def main():
             print("Benchmark.end")
 
         exit(0)
-
-    e3lm_parser = argparse.ArgumentParser(prog='e3lm',
-                                          usage='%(prog)s [options] file',
-                                          description=__doc__,
-                                          formatter_class=argparse.RawTextHelpFormatter,
-                                          epilog=__doc2__)
-
-    e3lm_parser.add_argument('--version', action="version",
-                             version="e3lm CLI v" + __version__ + " (3lm language)")
-
-    e3lm_parser.add_argument('file',
-                             nargs='?',
-                             default='-',
-                             help='path to the 3lm file (automatically detects extension) or - for nothing',
-                             )
-
-    e3lm_parser.add_argument('-q',
-                             '--quiet',
-                             action='store_true',
-                             dest='quiet',
-                             default=False,
-                             help='run quietly without any output')
-
-    e3lm_parser.add_argument('-nc',
-                             '--no-color',
-                             action='store_true',
-                             dest="nocolors",
-                             default=False,
-                             help='set output to be without ANSI colors')
-
-    e3lm_parser.add_argument('-ng',
-                             '--no-glyph',
-                             action='store_true',
-                             dest="noglyph",
-                             default=False,
-                             help='use non-glyph character to avoid encoding issues')
-
-    e3lm_parser.add_argument('-v',
-                             '--verbose',
-                             action='store',
-                             metavar='NONE|ERROR|INFO|DEBUG',
-                             dest='verbose',
-                             type=str,
-                             choices=["NONE", "ERROR", "INFO", "DEBUG"],
-                             default="INFO",
-                             help='filter output messages (default is INFO)')
-
-    e3lm_parser.add_argument('-i',
-                             '--interactive',
-                             action='store_true',
-                             default=False,
-                             help='execute with interactive mode')
-
-    e3lm_parser.add_argument('-p',
-                             '--plugin',
-                             action='store',
-                             metavar='plugin',
-                             type=str,
-                             default="",
-                             nargs="+",
-                             help='interpret using plugin(s). see below')
-
-    e3lm_parser.add_argument('-d',
-                             '--demo',
-                             dest='demo',
-                             metavar="code<n>",
-                             action='store',
-                             nargs='+',
-                             type=str,
-                             help='interpret demos in addition'
-                             )
-
-    e3lm_parser.add_argument('-b',
-                             '--benchmark',
-                             metavar='N',
-                             dest='benchmarking',
-                             default=False,
-                             action=arg_required_length(0, 2),
-                             nargs="*",
-                             help="Benchmark N number of times [and N times length of code]",
-                             )
-
-    e3lm_parser.add_argument('-fs',
-                             '--formatstyle',
-                             action='store',
-                             metavar='DEFAULT|MIN|COMPATIBLE',
-                             dest='formatstyle',
-                             type=str,
-                             choices=["DEFAULT", "MIN", "COMPATIBLE"],
-                             default="DEFAULT",
-                             help='Formatting of the output messages',
-                             )
-
-    # For passing BENCHMARK to subprocess to modify length of codes.
-    e3lm_parser.add_argument('--benchmark-mods',
-                             dest='benchmarking_mods',
-                             required=False, type=str,
-                             help=argparse.SUPPRESS)
-
-    args = e3lm_parser.parse_args()
-
-    quiet = args.quiet
-    if quiet:
-        verbose = "NONE"
-    verbose = args.verbose.upper()
-    verbose_lvl = 1 if verbose == "ERROR" else 2 if verbose == "INFO" else 3 if verbose == "DEBUG" else 0
-    input_file = args.file
-    demos = args.demo or []
-    plugins = args.plugin or []
-    nocolors = args.nocolors
-    noglyph = args.noglyph
-    formatstyle = args.formatstyle
-
-    if nocolors:
-        COLORS = {k: "" for k in COLORS.keys()}
-    benchmarking = args.benchmarking
-    benchmarking_mods = args.benchmarking_mods
-    if benchmarking_mods == None:
-        benchmarking_mods = {}
-        benchmarking_mods["enabled"] = False
-    else:
-        benchmarking_mods = benchmarking_mods.split(",")
-        benchmarking_mods = {b.split('=')[0]: b.split(
-            '=')[1] for b in benchmarking_mods}
-        benchmarking_mods["enabled"] = True
-
-    # --- Check if benchmarking ---
-    if benchmarking != False:
-        if type(benchmarking) == list:
-            if len(benchmarking) == 0:
-                benchmarking = [1, 1, ]
-            elif len(benchmarking) == 1:
-                benchmarking.append(1)
-        if benchmarking[0] != 0 and benchmarking[1] != 0:
-            BENCHMARK(input_file)
-    else:
-        # --- Actual program ---
-        CLI(input_file)
 
 
 if __name__ == "__main__":
