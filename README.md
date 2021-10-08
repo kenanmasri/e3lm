@@ -19,13 +19,19 @@ Whether you are a scientist, a programmer or an educator, 3LM can be useful for 
 
 ## Installation
 
-> NOTE: Installation may not work right now.. You might have to clone the repository.
+> NOTE: Installation does not work right now.. Since the package is not published to PyPI.
 
+### Installation from Github
+```bash
+$ pip install git+https://github.com/kenanmasri/e3lm.git#egg=e3lm
+```
+
+### Installation through PyPI
 Creating a virtual environment is very preferrable.
 
 ```bash
-python -m venv venv
-python -m pip install e3lm
+$ python -m venv venv
+$ python -m pip install e3lm
 ```
 
 ## Configuration
@@ -40,8 +46,14 @@ E3LM_TEMP_DIRECTORY="tmp"
 Basic example:
 
 ```bash
+# Interpret example.3lm file.
 $ e3lm example.3lm
-$ e3lm 
+
+# Interpret demo code1 and generate graphviz dot file and view graph image.
+$ e3lm -d code1 -p dot view
+
+# Benchmarking 20 times the demo code0 for 6 measurements.
+$ e3lm -d code0 -b 6 20
 ```
 
 More options:
@@ -64,8 +76,10 @@ Refer to the [Wiki](https://github.com/kenanmasri/3lm/wiki) to learn the languag
  - [ ] Examination questions auto-extraction from 3lm files. (Could be a plugin.)
  - [ ] Rewrite included out-of-the-box example codes and error codes.
  - [ ] Add more tests.
- - [x] Benchmarking
- - [x] Contributable plugins (contrib folder?)
+ - [x] Benchmarking.
+ - [x] Contrib plugins.
+ - [ ] Make publish ready documentation.
+ - [ ] Publish to PyPI.
 
 More possibilities... See [e3lm.todo](https://github.com/e3lm/e3lm/blob/master/e3lm.todo)
 
