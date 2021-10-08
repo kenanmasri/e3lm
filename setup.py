@@ -11,7 +11,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 if __name__ == "__main__":
     setuptools.setup(
         name="e3lm",
-        version="0.1.5",
+        version="0.1.6",
         author="Kenan Masri",
         author_email="kenanmasri@outlook.com",
         description="e3lm CLI tool (3lm language) for managing .3lm projects and files.",

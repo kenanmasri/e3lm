@@ -9,7 +9,7 @@ fi
 
 # For source debugging purposes
 e3lmcli() {
-    python "$WORKSPACE/src/cli.py" $*
+    python "$WORKSPACE/src/e3lm/cli.py" $*
 }
 
 # Activate the VENV optionally.

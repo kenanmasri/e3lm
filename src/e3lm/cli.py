@@ -4,7 +4,7 @@
 This tool is designed mainly to enable interpretation of 3lm files and
 upgrading the interpreter and its plugins.
 """
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 
 __doc2__ = """additional arguments:
     Nothing for now.
