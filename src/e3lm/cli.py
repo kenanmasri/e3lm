@@ -62,17 +62,6 @@ CLI_PLUGINS = [
     "parse",
 ] # Plugins that are not E3lmPlugin
 
-quiet = False
-verbose = "INFO"
-verbose_lvl = 2
-input_file = None
-demos = []
-plugins = []
-nocolors = False
-noglyph = False
-formatstyle = "DEFAULT"
-benchmarking = False
-benchmarking_mods = {"enabled": False}
 
 def windows_enable_ANSI(std_id):
     """Enable Windows 10 cmd.exe ANSI VT Virtual Terminal Processing."""
@@ -159,8 +148,20 @@ def demo_exists(f):
     return demo_file(f) != None
 
 
-def CLI(input_file="-"):
+def CLI(input_file="-", kwargs={}):
     """The actual CLI."""
+    if kwargs:
+        quiet = kwargs["quiet"]
+        verbose = kwargs["verbose"]
+        verbose_lvl = kwargs["verbose_lvl"]
+        demos = kwargs["demos"]
+        plugins = kwargs["plugins"]
+        nocolors = kwargs["nocolors"]
+        noglyph = kwargs["noglyph"]
+        formatstyle = kwargs["formatstyle"]
+        benchmarking = kwargs["benchmarking"]
+        benchmarking_mods = kwargs["benchmarking_mods"]
+        colors = kwargs["colors"]
 
     shown_msgs = {}
     runstack = {}
@@ -197,12 +198,12 @@ def CLI(input_file="-"):
                 input_file = input_file + ".3lm"
             if not os.path.isfile(input_file):
                 # if not quiet:
-                print(COLORS["E"] + 'Error: ' + input_file +
-                      ' does not exist.' + COLORS["R"], file=sys.stderr)
+                print(colors["E"] + 'Error: ' + input_file +
+                      ' does not exist.' + colors["R"], file=sys.stderr)
             # elif not quiet:
             else:
-                print(COLORS["E"] + 'Error: ' + input_file +
-                      ' is a directory.' + COLORS["R"], file=sys.stderr)
+                print(colors["E"] + 'Error: ' + input_file +
+                      ' is a directory.' + colors["R"], file=sys.stderr)
             sys.exit(1)
 
     # Check if demos are specified
@@ -230,8 +231,8 @@ def CLI(input_file="-"):
     # Print headers for each runtime
     for i, run in runstack.items():
         if formatstyle == "DEFAULT":
-            printers.cprint(COLORS["3"] + "--" + COLORS["1"] + "== " + COLORS["4"] +
-                            i + COLORS["1"] + " ==" + COLORS["3"] + "--" + COLORS["R"], color="" if nocolors else "SUCCESS")
+            printers.cprint(colors["3"] + "--" + colors["1"] + "== " + colors["4"] +
+                            i + colors["1"] + " ==" + colors["3"] + "--" + colors["R"], color="" if nocolors else "SUCCESS")
         elif formatstyle == "MIN":
             pass
         elif formatstyle == "COMPATIBLE":
@@ -265,8 +266,8 @@ def CLI(input_file="-"):
                         count = str(len(run.splitlines()))
                         shown_msgs["benchmarking_parse"] = True
                         if formatstyle == "DEFAULT":
-                            print(COLORS["2"] + "       - "+COLORS["H"] +
-                                  count + " line(s) of code Total." + COLORS["R"])
+                            print(colors["2"] + "       - "+colors["H"] +
+                                  count + " line(s) of code Total." + colors["R"])
                         elif formatstyle == "COMPATIBLE":
                             print("Benchmark.info:", count)
 
@@ -292,8 +293,8 @@ def CLI(input_file="-"):
                     count = str(len(run.splitlines()))
                     shown_msgs["benchmarking_parse"] = True
                     if formatstyle == "DEFAULT":
-                        print(COLORS["2"] + "       - "+COLORS["H"] +
-                              count + " line(s) of code Total." + COLORS["R"])
+                        print(colors["2"] + "       - "+colors["H"] +
+                              count + " line(s) of code Total." + colors["R"])
                     elif formatstyle == "COMPATIBLE":
                         print("Benchmark.info.loc_count", count)
 
@@ -301,8 +302,8 @@ def CLI(input_file="-"):
                     count = str(len(run_program.flat_blocks))
                     shown_msgs["benchmarking_intr"] = True
                     if formatstyle == "DEFAULT":
-                        print(COLORS["2"] + "       - "+COLORS["H"] +
-                              count + " blocks(s) Total." + COLORS["R"])
+                        print(colors["2"] + "       - "+colors["H"] +
+                              count + " blocks(s) Total." + colors["R"])
                     elif formatstyle == "COMPATIBLE":
                         print("Benchmark.info.block_count", count)
 
@@ -325,7 +326,7 @@ def CLI(input_file="-"):
                 if not hasattr(run_program, "dot_source"):
                     if formatstyle == "DEFAULT":
                         print(
-                            COLORS["E"] + 'Error: Program does not have dot_source.' + COLORS["R"], file=sys.stderr)
+                            colors["E"] + 'Error: Program does not have dot_source.' + colors["R"], file=sys.stderr)
                     elif formatstyle == "COMPATIBLE":
                         print("Plugin.view.error",
                               "Program does not have dot_source.")
@@ -374,14 +375,28 @@ def caller(the_call, _type="subprocess", shell=True, ret=False, stdout=-1, stder
         return p
 
 
-def BENCHMARK(input_file):
+def BENCHMARK(input_file, kwargs={}):
     import math
+
+    if kwargs:
+        quiet = kwargs["quiet"]
+        verbose = kwargs["verbose"]
+        verbose_lvl = kwargs["verbose_lvl"]
+        demos = kwargs["demos"]
+        plugins = kwargs["plugins"]
+        nocolors = kwargs["nocolors"]
+        noglyph = kwargs["noglyph"]
+        formatstyle = kwargs["formatstyle"]
+        benchmarking = kwargs["benchmarking"]
+        benchmarking_mods = kwargs["benchmarking_mods"]
+        colors = kwargs["colors"]
+
     shown_msgs = {}
     py = os.getenv("WORKSPACE") + os.path.sep + os.getenv("VENV") + \
         os.path.sep + "Scripts" + os.path.sep + "python"
     if formatstyle == "DEFAULT":
-        printers.cprint(COLORS["2"] + "--" + COLORS["2"] + "== " + COLORS["2"] +
-                        "Benchmarking..." + COLORS["2"] + " ==" + COLORS["2"] + "--" + COLORS["R"], color="" if nocolors else "SUCCESS")
+        printers.cprint(colors["2"] + "--" + colors["2"] + "== " + colors["2"] +
+                        "Benchmarking..." + colors["2"] + " ==" + colors["2"] + "--" + colors["R"], color="" if nocolors else "SUCCESS")
     elif formatstyle == "COMPATIBLE":
         print("Benchmark.begin")
 
@@ -421,8 +436,8 @@ def BENCHMARK(input_file):
             call = " ".join([pipes.quote(s) for s in strings])
             if verbose_lvl == 3:
                 if "dbg_benchmark_init" not in shown_msgs.keys():
-                    print(COLORS["BLUE"] + "DBG: The call in subprocess is: " +
-                          COLORS["CYAN"] + "python e3lm.py " + call)
+                    print(colors["BLUE"] + "DBG: The call in subprocess is: " +
+                          colors["CYAN"] + "python e3lm.py " + call)
             p = caller("\"" + py + "\"" + " " + "\"" + os.path.abspath(__file__) +
                        "\" " + call, _type="subprocess", shell=False, ret=True)
             pout = os._wrap_close(io.TextIOWrapper(p.stdout), p)
@@ -441,14 +456,14 @@ def BENCHMARK(input_file):
                     read_total_perr = read_total_perr + "\n" + read_perr
                     if read_pout != "":
                         if formatstyle == "DEFAULT":
-                            print(COLORS["2"] + "       OUT: " +
-                                  COLORS["R"] + read_pout)
+                            print(colors["2"] + "       OUT: " +
+                                  colors["R"] + read_pout)
                         elif formatstyle == "COMPATIBLE":
                             print("Benchmark.out", read_pout)
                     if read_perr != "":
                         if formatstyle == "DEFAULT":
-                            print(COLORS["E"] + "       ERR: " +
-                                  COLORS["R"] + read_perr)
+                            print(colors["E"] + "       ERR: " +
+                                  colors["R"] + read_perr)
                         elif formatstyle == "COMPATIBLE":
                             print("Benchmark.err", read_perr)
                         raise TimeoutError("An error occured, aborting..")
@@ -464,10 +479,10 @@ def BENCHMARK(input_file):
             t_end = perf_counter()
         except KeyboardInterrupt:
             if formatstyle == "DEFAULT":
-                print(COLORS["GREEN"] +
-                      "\nUser cancelled (KeyboardInterrupt)" + COLORS["R"])
-                printers.cprint(COLORS["2"] + "--" + COLORS["2"] + "== " + COLORS["2"] +
-                                "Benchmarking done..." + COLORS["2"] + " ==" + COLORS["2"] + "--" + COLORS["R"] + "\n", color="" if nocolors else "SUCCESS")
+                print(colors["GREEN"] +
+                      "\nUser cancelled (KeyboardInterrupt)" + colors["R"])
+                printers.cprint(colors["2"] + "--" + colors["2"] + "== " + colors["2"] +
+                                "Benchmarking done..." + colors["2"] + " ==" + colors["2"] + "--" + colors["R"] + "\n", color="" if nocolors else "SUCCESS")
             elif formatstyle == "COMPATIBLE":
                 print("Benchmark.cancelled")
                 print("Benchmark.end")
@@ -475,9 +490,9 @@ def BENCHMARK(input_file):
             exit(0)
         except TimeoutError as e:
             if formatstyle == "DEFAULT":
-                print(COLORS["GREEN"] + "Timeout: " + str(e) + COLORS["R"])
-                printers.cprint(COLORS["2"] + "--" + COLORS["2"] + "== " + COLORS["2"] +
-                                "Benchmarking done..." + COLORS["2"] + " ==" + COLORS["2"] + "--" + COLORS["R"] + "\n", color="" if nocolors else "SUCCESS")
+                print(colors["GREEN"] + "Timeout: " + str(e) + colors["R"])
+                printers.cprint(colors["2"] + "--" + colors["2"] + "== " + colors["2"] +
+                                "Benchmarking done..." + colors["2"] + " ==" + colors["2"] + "--" + colors["R"] + "\n", color="" if nocolors else "SUCCESS")
             elif formatstyle == "COMPATIBLE":
                 print("Benchmark.timeout", str(e))
                 print("Benchmark.end")
@@ -509,14 +524,14 @@ def BENCHMARK(input_file):
 
     durations = [t["end"]-t["start"] for t in timelog]
     if formatstyle == "DEFAULT":
-        print(COLORS["1"]+"Max: " + COLORS["HEADER"] + str(round((max(durations))
-                                                                 * 1000, 1000))[:6] + COLORS["1"] + " ms" + COLORS["R"])
-        print(COLORS["1"]+"Min: " + COLORS["HEADER"] + str(round((min(durations))
-                                                                 * 1000, 1000))[:6] + COLORS["1"] + " ms" + COLORS["R"])
-        print(COLORS["1"]+"Avg: " + COLORS["HEADER"] + str(round((sum(durations) /
-                                                                  iterations) * 1000, 1000))[:6] + COLORS["1"] + " ms" + COLORS["R"])
-        printers.cprint(COLORS["2"] + "--" + COLORS["2"] + "== " + COLORS["2"] +
-                        "Benchmarking done..." + COLORS["2"] + " ==" + COLORS["2"] + "--" + COLORS["R"] + "\n", color="" if nocolors else "SUCCESS")
+        print(colors["1"]+"Max: " + colors["HEADER"] + str(round((max(durations))
+                                                                 * 1000, 1000))[:6] + colors["1"] + " ms" + colors["R"])
+        print(colors["1"]+"Min: " + colors["HEADER"] + str(round((min(durations))
+                                                                 * 1000, 1000))[:6] + colors["1"] + " ms" + colors["R"])
+        print(colors["1"]+"Avg: " + colors["HEADER"] + str(round((sum(durations) /
+                                                                  iterations) * 1000, 1000))[:6] + colors["1"] + " ms" + colors["R"])
+        printers.cprint(colors["2"] + "--" + colors["2"] + "== " + colors["2"] +
+                        "Benchmarking done..." + colors["2"] + " ==" + colors["2"] + "--" + colors["R"] + "\n", color="" if nocolors else "SUCCESS")
     elif formatstyle == "COMPATIBLE":
         print("Benchmark.info.max", str(round((max(durations))
                                               * 1000, 1000))[:6])
@@ -642,8 +657,9 @@ def main():
     noglyph = args.noglyph
     formatstyle = args.formatstyle
 
+    colors = COLORS
     if nocolors:
-        COLORS = {k: "" for k in COLORS.keys()}
+        colors = {k: "" for k in COLORS.keys()}
     benchmarking = args.benchmarking
     benchmarking_mods = args.benchmarking_mods
     if benchmarking_mods == None:
@@ -655,6 +671,22 @@ def main():
             '=')[1] for b in benchmarking_mods}
         benchmarking_mods["enabled"] = True
 
+
+    kwargs = {
+        "args": args,
+        "quiet": quiet,
+        "verbose": verbose,
+        "verbose_lvl": verbose_lvl,
+        "demos": demos,
+        "plugins": plugins,
+        "nocolors": nocolors,
+        "noglyph": noglyph,
+        "formatstyle": formatstyle,
+        "benchmarking": benchmarking,
+        "benchmarking_mods": benchmarking_mods,
+        "colors": colors,
+    }
+
     # --- Check if benchmarking ---
     if benchmarking != False:
         if type(benchmarking) == list:
@@ -663,10 +695,10 @@ def main():
             elif len(benchmarking) == 1:
                 benchmarking.append(1)
         if benchmarking[0] != 0 and benchmarking[1] != 0:
-            BENCHMARK(input_file)
+            BENCHMARK(input_file, kwargs=kwargs)
     else:
         # --- Actual program ---
-        CLI(input_file)
+        CLI(input_file, kwargs=kwargs)
 
 
 if __name__ == "__main__":
