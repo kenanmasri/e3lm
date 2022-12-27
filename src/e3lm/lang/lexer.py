@@ -929,7 +929,7 @@ class E3lmLexer():
         """
         for tok in toks:
             if not tok:
-                if debug:
+                if self.debug:
                     self.print("No tokens found!", "COLERR") # STRING
                 break
             if tok.type == "NEWLINE":
