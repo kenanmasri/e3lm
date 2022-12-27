@@ -78,6 +78,6 @@
 			"WORKSPACE": "${workspaceFolder}"
 		},
 		"terminal.integrated.defaultProfile.windows": "Git Bash",
-		"python.pythonPath": "env\\Scripts\\python.exe",
+		"python.pythonPath": "venv\\Scripts\\python.exe",
 	}
 }
