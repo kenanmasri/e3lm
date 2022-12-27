@@ -49,10 +49,10 @@ class E3lmParser():
     # Block variations
     def p_block(self, p):
         '''
-        block   : CLSS NAME blockcontent END
-                | CLSS blockcontent END
-                | CLSS NAME END
-                | CLSS END
+        block   : CLASS NAME blockcontent END
+                | CLASS blockcontent END
+                | CLASS NAME END
+                | CLASS END
         '''
         klass = p[1]
         name = p[2] if type(p[2]) == str else ""
@@ -97,7 +97,7 @@ class E3lmParser():
             p[0] = ast.Attr(p[1], p[2])
         else:
             p[0] = ast.Attr("body", p[1],
-                            body_tokens=p.lexer.p_one.body_tokens or [])
+                            tokens=p.lexer.p_one.tokens or [])
 
     # binary operations
     def p_binops(self, p):
@@ -368,7 +368,9 @@ class E3lmParser():
                 fname = fname + ".3lm"
             fpath = curpath + os.path.sep + fname
             if not os.path.exists(fpath):
-                raise Exception("'{}' does not exist.".format(fpath))
+                fpath = os.path.abspath(fname)
+                if not os.path.exists(fpath):
+                    raise Exception("'{}' does not exist.".format(fpath))
             return fpath
 
         regex = regexes["IMPORT"]

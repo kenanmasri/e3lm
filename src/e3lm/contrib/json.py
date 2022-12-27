@@ -140,8 +140,8 @@ class JsonPlugin(E3lmInterpreter):
         # Names are the keys of the dict "attrs" of block.
         s = self.vgeneric_start(obj)
         s["value"] = self.visit(obj.value)
-        if hasattr(obj, "body_tokens"):
-            s["body_tokens"] = obj.body_tokens
+        if hasattr(obj, "tokens"):
+            s["tokens"] = obj.tokens
         return s
 
     v_Type = vgeneric_value

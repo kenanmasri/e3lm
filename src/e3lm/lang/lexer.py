@@ -355,8 +355,8 @@ class E3lmLexer():
     ## re_nondigit        = r'(' + nondigit_char + r')'
     ## re_uppercased      = r'(' + uppercased_char + r')'
     re_identifier = r'(' + identifier_char + r'*)'
-    re_class_def = r'(' + class_name_char + r"*)[ \t]*(" + \
-        identifier_char + r"*)"
+    re_class_def = r'(' + class_name_char + r"*)" # ([ \t]*(" + \
+    #     identifier_char + r"*))?"
 
     # r'[-+]?[0-9]+(\.([0-9]+)?([eE][-+]?[0-9]+)?|[eE][-+]?[0-9]+)'
     re_float = tokenize.Floatnumber
@@ -419,10 +419,10 @@ class E3lmLexer():
         return t
 
     @plylex.TOKEN(re_class_def)
-    def t_CLSS(self, t):
+    def t_CLASS(self, t):
         match = t.lexer.lexmatch
         t.value = match.group(3) # 3 is always first in plylex
-        t.value += ("#" + match.group(4)) if match.group(4) else ""
+        t.name = match.group(5) if match.group(5) else ""
         t.lexer.push_state('BLOCK')
         return t
 
@@ -476,20 +476,22 @@ class E3lmLexer():
         return t
 
     @plylex.TOKEN(re_class_def)
-    def t_BLOCK_CLSS(self, t):
-        t.lexer.push_state('BLOCK')
+    def t_BLOCK_CLASS(self, t):
+        match = t.lexer.lexmatch
+        t.value = match.group(8) 
+        self.stack.push(t, {}, 'BLOCK')
+        # t.lexer.push_state('BLOCK')
         return t
 
     @plylex.TOKEN(re_identifier)
     def t_BLOCK_NAME(self, t):
-        self.stack.push(t, {})
         self.stack.indent_check = "gt"
         return t
 
     def t_BLOCK_NEWLINE(self, t):
         r"\n"
         if t.lexer.last_token:
-            if t.lexer.last_token.type == "CLSS":
+            if t.lexer.last_token.type == "CLASS":
                 self.stack.push(t.lexer.last_token, {})
                 self.stack.indent_check = "gt"
             elif t.lexer.last_token.type == "NAME":
@@ -862,7 +864,7 @@ class E3lmLexer():
         val = (val[0:71] + "...") if val[0:71] != val else val
         self.print(" " * ( 1
                     + self.lexer.computed["indent"][token.lineno]
-                    + (1 if offset == token.lineno else 0)
+                    + (1 if offset == (token.lineno if token.type != "NAME" else 0) else 0)
                 ) + C["B"] + "T " + C["C"] + str(token.type) + (" = "
                     + C["D"] + str(val)) if token.value else " = null"
             )

@@ -14,9 +14,9 @@ setuptools.setup(
     description="e3lm CLI tool (3lm language) for managing .3lm projects and files.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/e3lm/e3lm",
+    url="https://github.com/kenanmasri/e3lm",
     project_urls={
-        "Bug Tracker": "https://github.com/e3lm/e3lm/issues",
+        "Bug Tracker": "https://github.com/kenanmasri/e3lm/issues",
     },
     entry_points='''[console_scripts]\ne3lm=cli:main''',
     install_requires=[install_requirements],

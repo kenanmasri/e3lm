@@ -42,7 +42,7 @@ class ParseTreeVisualizer(object):
         elif type(parent) == ast.Attr and parent.name == "body":
             str_node = ast.Str(node)
             str_node.dot = {}
-            str_node.dot["align"] = "left" if not "rtl" in parent.body_tokens \
+            str_node.dot["align"] = "left" if not "rtl" in parent.tokens \
                 else "right"
             str_node.type = "NO_QUOTE"
             str_node.dot["id"] = self.ncount
@@ -283,12 +283,12 @@ class DotPlugin(E3lmPlugin):
                 dot["extra"] = self.link_dot_eval(
                     node) if hasattr(node, "eval") else ""
         if node.name == "body":
-            if hasattr(node, "body_tokens"):
-                if "rtl" in node.body_tokens:
+            if hasattr(node, "tokens"):
+                if "rtl" in node.tokens:
                     dot["align"] = "rtl"
-                elif "ltr" in node.body_tokens:
+                elif "ltr" in node.tokens:
                     dot["align"] = "ltr"
-                elif "center" in node.body_tokens:
+                elif "center" in node.tokens:
                     dot["align"] = "center"
         return dot
 

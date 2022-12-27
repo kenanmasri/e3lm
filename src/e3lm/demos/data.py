@@ -16,7 +16,7 @@ End
 examples.append({"text": code0,
                  "lex": {
                      "assert": [
-                         ["tokens", ['CLSS', 'NAME', 'END']]
+                         ["tokens", ['CLASS', 'NAME', 'END']]
                      ]},
                  })
 # 1
@@ -37,10 +37,10 @@ End
 examples.append({"text": code1,
                  "lex": {
                      "assert": [
-                         ["tokens", ['CLSS', 'NAME', 'END', 'CLSS', 'NAME',
-                                     'CLSS', 'NAME', 'CLSS', 'NAME', 'CLSS',
+                         ["tokens", ['CLASS', 'NAME', 'END', 'CLASS', 'NAME',
+                                     'CLASS', 'NAME', 'CLASS', 'NAME', 'CLASS',
                                      'NAME', 'END', 'END', 'END', 'END',
-                                     'CLSS', 'END']],
+                                     'CLASS', 'END']],
                      ]},
                  "dot": True,
                  })

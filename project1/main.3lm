@@ -1,0 +1,8 @@
+Import test1
+Import test1; huh?
+Import test1
+Import test1
+
+Class Bob
+        Import test1; Htes?
+End

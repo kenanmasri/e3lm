@@ -75,7 +75,7 @@ class TRAVERSE(Traversal):
                 "Import": " ╰ ",
                 "Attr": "⌐ ",
                 "TraverseArrow": "→",
-                "body_tokens": "←",
+                "tokens": "←",
             },
         } if charset == [] else charset
         self.COLS = cols
@@ -165,14 +165,14 @@ class TRAVERSE(Traversal):
                     "".join([str(" " + self.COLS["BLUE"] + self.charset["TraverseItem"]["TraverseArrow"] + self.COLS["CYAN"] +
                             " %s") % v for v in attr.children.rights])
             if attr.name == "body":
-                if hasattr(attr.o.body, "body_tokens"):
+                if hasattr(attr.o.body, "tokens"):
                     valae = self.COLS["HEADER"] + attr.value[:5] + \
                         (attr.value[5:] and "...") + \
                         "["+len(attr.value)+"]" + self.COLS["R"]
-                    # attr.o.body.body_tokens
+                    # attr.o.body.tokens
                     arrowpart = " " + \
                         self.COLS["WARNING"] + \
-                        " " + self.charset["TraverseItem"]["body_tokens"] + "(" + ",".join(attr.o.body.body_tokens) + ")"
+                        " " + self.charset["TraverseItem"]["tokens"] + "(" + ",".join(attr.o.body.tokens) + ")"
             return self.COLS["INFO2"] + self.charset["TraverseItem"]["Attr"] + self.COLS["SUCCESS"] + "Attr(" + namae + eqq + valae + self.COLS["SUCCESS"] + ")" + arrowpart + self.COLS["R"]
 
     def get_text_of_TraverseArrow(self, arrow):
@@ -285,7 +285,7 @@ def nprint(node, max_level=6, treefunc=TREE_NODES, **kwargs):  # pragma: no cove
                     "Import": " < ",
                     "Attr": "> ",
                     "TraverseArrow": "=>",
-                    "body_tokens": "<=",
+                    "tokens": "<=",
                 }
             }
 

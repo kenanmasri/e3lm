@@ -1,28 +1,25 @@
 Dummy one
     attr0 = "two.attr5"
-    attr5 = """hi i am \n bob
-
-x
-    """
+    attr5 = """hi i am \n box"""
     attr6 = Dummy.two
     ---xe
          Hi there bob!
          My first name is {{ attr5 }}
          My name is {{ testvariable }}
-      Lol bye
+         Lol bye
            Lol bye
            Lol bye
-        Lol bye
-        Lol byex
-
-     x
+         Lol bye
+            Lol bye
+            Lol byex
+    ---
 End
 
 Dummy
     attr5 = 7
     Dummy
         attr5 = 7
-        Dummy
+        Dummy two
             attr2 = 1+2
             attr2 = 1 + 3
             attr2 = 1 + 4

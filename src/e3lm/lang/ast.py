@@ -115,8 +115,8 @@ class Attr(AST):
         self.name = name
         self.value = value
         if self.name == "body":
-            if "body_tokens" in kwargs.keys():
-                self.body_tokens = kwargs["body_tokens"] or []
+            if "tokens" in kwargs.keys():
+                self.tokens = kwargs["tokens"] or []
 
     def __str__(self):
         return f"Attr({self.name}={self.value})"

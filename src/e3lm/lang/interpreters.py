@@ -433,7 +433,7 @@ class E3lmInterpreter(NodeVisitor):
             if not hasattr(obj, "_body_template"):
                 obj._body_template = Template(obj.value)
             kwargs = self.current_block.attrs
-            kwargs = {**kwargs, "body_tokens": obj.body_tokens}
+            kwargs = {**kwargs, "tokens": obj.tokens}
             obj.eval = obj._body_template.render(**kwargs)
             return obj.eval if evaluate else obj
         # return obj

@@ -1,6 +1,6 @@
 <img src="resources/logo.png" height="64" width="64" style="vertical-align: middle;"/> &nbsp;&nbsp; <span style="color: orange; font-size: 32px; vertical-align: middle;">3LM</span>
 
-<img src="https://img.shields.io/github/license/e3lm/e3lm" /> <img src="https://img.shields.io/github/repo-size/e3lm/e3lm" /> <img src="https://img.shields.io/pypi/v/e3lm" /> 
+<img src="https://img.shields.io/github/license/kenanmasri/3lm" /> <img src="https://img.shields.io/github/repo-size/kenanmasri/3lm" /> <img src="https://img.shields.io/pypi/v/e3lm" /> 
 
 Have fun while learning!
 
@@ -8,7 +8,7 @@ Have fun while learning!
 
 ## So what is this exactly?
 
-3LM is a simple, interpreted language used alongside Python.
+3LM is a structure language parsed in Python.
 
 It is used for defining objects and structures, intended mainly to help write structured content fast and with ease.
 Whether you are a scientist, a programmer or an educator, 3LM can be useful for you.
@@ -19,7 +19,7 @@ Whether you are a scientist, a programmer or an educator, 3LM can be useful for 
 
  - Examination questions auto-extraction from 3lm files. (Could be a plugin.)
  - Contributable plugins (contrib folder?)
- - Much more possibilities... See https://github.com/e3lm/e3lm/blob/master/e3lm.todo
+ - Much more possibilities... See https://github.com/kenanmasri/e3lm/blob/master/e3lm.todo
 
 ---
 

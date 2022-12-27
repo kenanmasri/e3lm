@@ -38,7 +38,7 @@ tokens = (
     'COMMA',
     # Syntax
     'IMPORT',
-    'CLSS',
+    'CLASS',
     'NAME',
     'ATTR',
     'TERM',
