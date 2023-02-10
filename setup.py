@@ -5,8 +5,30 @@ import setuptools
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-with open("requirements.txt", "r", encoding="utf-8") as fh:
-    install_requirements = fh.read()
+install_requirements = [
+    "ansicolors",
+    "asciitree",
+    "attrs",
+    "graphviz",
+    "charset-normalizer",
+    "colorama",
+    "iniconfig",
+    "jinja2",
+    "lxml",
+    "markupsafe",
+    "more-itertools",
+    "packaging",
+    "pillow",
+    "pluggy",
+    "ply",
+    "py",
+    "pycodestyle",
+    "pyparsing",
+    "six",
+    "toml",
+    "tomli",
+    "untokenize",
+]
 
 if __name__ == "__main__":
     setuptools.setup(
@@ -22,7 +44,7 @@ if __name__ == "__main__":
             "Bug Tracker": "https://github.com/kenanmasri/3lm/issues",
         },
         entry_points='''[console_scripts]\ne3lm=e3lm.cli:main''',
-        install_requires=[install_requirements],
+        install_requires=install_requirements,
         classifiers=[
             "Programming Language :: Python :: 3",
             "License :: OSI Approved :: MIT License",
