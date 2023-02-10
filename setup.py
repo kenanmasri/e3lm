@@ -33,7 +33,7 @@ install_requirements = [
 if __name__ == "__main__":
     setuptools.setup(
         name="e3lm",
-        version="0.1.7",
+        version="0.1.8",
         author="Kenan Masri",
         author_email="kenanmasri@outlook.com",
         description="e3lm CLI tool (3lm language) for managing .3lm projects and files.",
