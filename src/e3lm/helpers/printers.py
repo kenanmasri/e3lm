@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import pprint
 from asciitree import LeftAligned, Traversal, KeyArgsConstructor
 from asciitree.drawing import BoxStyle
 
@@ -254,11 +253,11 @@ TREE_NODES_NCNG = TREE(draw=BOXSTYLE(
 
 
 def _print(text, *args):  # pragma: no cover
-    _all = [text, ]
+    _all = [str(text), ]
     col = "ENDC"
     for i, arg in enumerate(args):
         if arg not in COLORS.keys():
-            _all.append(arg)
+            _all.append(str(arg))
         else:
             col = arg
 

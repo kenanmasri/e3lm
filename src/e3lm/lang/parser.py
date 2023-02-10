@@ -82,7 +82,8 @@ class E3lmParser():
                 p[0].children.extend([p[2]])
             else:
                 self.errors.append([
-                    (AttributeError, p.lexpos(2), p.lexer.lexer.last_token.lineno-1),
+                    (AttributeError, p.lexpos(2),
+                     p.lexer.lexer.last_token.lineno-1),
                     "Duplicate attribute '%s'" % p[2].name, p,
                 ])
         else:
@@ -325,6 +326,7 @@ class E3lmParser():
                 self.tracking = kwargs['tracking']
             else:
                 self.tracking = False
+        self.errors = []
 
     def parse(self, input, source=None, **kwargs):
         # get curpath for imports

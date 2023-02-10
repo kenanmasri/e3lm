@@ -1,0 +1,21 @@
+Course my_course ; definiton
+    id = "e1f4b2a..."
+    ; More attributes of my_course go here...
+    ---
+    Description of course.
+    ---
+    Page
+        title = "Welcome to the first page of my course"
+        ---
+        This is the body content of the page. You can write as much as you like!
+        ---
+    End
+    Page
+        title = "Second page"
+        ---
+        "Marie François Xavier Bichat" is the founder of histology.
+        ---
+    End
+    ; More definitions under my_course go here...
+End
+import more/something

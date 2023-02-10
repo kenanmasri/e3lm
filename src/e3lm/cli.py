@@ -4,7 +4,7 @@
 This tool is designed mainly to enable interpretation of 3lm files and
 upgrading the interpreter and its plugins.
 """
-__version__ = "0.1.6"
+__version__ = "0.1.7"
 
 __doc2__ = """additional arguments:
     Nothing for now.
@@ -23,49 +23,43 @@ __doc3__ = """additional arguments:
 """
 
 import argparse
-import textwrap
-import os
-import subprocess
 import io
-import signal
-import sys
+import itertools
 import json
+import os
+import signal
+import subprocess
+import sys
+import textwrap
 import timeit
-import pipes
 from datetime import datetime
-from time import sleep
-from time import perf_counter
+from shlex import quote
+from time import perf_counter, sleep
 
-from e3lm.utils.spin import animate as spinner
+from graphviz import Source as GraphvizSource
+
+from e3lm.contrib.dot import DotPlugin as Dot
+from e3lm.contrib.json import JsonPlugin as Json
+from e3lm.demos.data import getcode as gettestcode
 from e3lm.helpers import printers
 from e3lm.helpers.printers import COLORS
 from e3lm.lang.ast import basic_dt
-from e3lm.utils.lang import lex, parse, interpret, get_plugin
 from e3lm.lang.interpreters import E3lmInterpreter, E3lmPlugin
-from e3lm.contrib.json import JsonPlugin as Json
-from e3lm.contrib.dot import DotPlugin as Dot
-from graphviz import Source as GraphvizSource
-from e3lm.demos.data import getcode as gettestcode
+from e3lm.utils.lang import get_plugin, interpret, lex, parse
+from e3lm.utils.spin import animate as spinner
 
-# Colors enabler
-import colorama
-from io import StringIO
-from colorama import Fore, Style
-import itertools
-
-
-## Variables
+# Variables
 
 CLI_PLUGINS = [
     "view",
     "lex",
     "parse",
-] # Plugins that are not E3lmPlugin
+]  # Plugins that are not E3lmPlugin
 
 
 def windows_enable_ANSI(std_id):
     """Enable Windows 10 cmd.exe ANSI VT Virtual Terminal Processing."""
-    from ctypes import byref, POINTER, windll, WINFUNCTYPE
+    from ctypes import POINTER, WINFUNCTYPE, byref, windll
     from ctypes.wintypes import BOOL, DWORD, HANDLE
 
     GetStdHandle = WINFUNCTYPE(
@@ -238,8 +232,8 @@ def CLI(input_file="-", kwargs={}):
         elif formatstyle == "COMPATIBLE":
             print("Runtime.begin", i)
 
-        run_plugins = [get_plugin(p) for p in plugins if p not in CLI_PLUGINS
-            and type(get_plugin(p)) not in basic_dt]
+        run_plugins = [get_plugin(p) for p in plugins if p not in CLI_PLUGINS and
+                       type(get_plugin(p)) not in basic_dt]
 
         if "lex" in plugins:
             run_program = lex(run, i, debug=verbose_lvl >= 2,
@@ -266,7 +260,7 @@ def CLI(input_file="-", kwargs={}):
                         count = str(len(run.splitlines()))
                         shown_msgs["benchmarking_parse"] = True
                         if formatstyle == "DEFAULT":
-                            print(colors["2"] + "       - "+colors["H"] +
+                            print(colors["2"] + "       - " + colors["H"] +
                                   count + " line(s) of code Total." + colors["R"])
                         elif formatstyle == "COMPATIBLE":
                             print("Benchmark.info:", count)
@@ -293,7 +287,7 @@ def CLI(input_file="-", kwargs={}):
                     count = str(len(run.splitlines()))
                     shown_msgs["benchmarking_parse"] = True
                     if formatstyle == "DEFAULT":
-                        print(colors["2"] + "       - "+colors["H"] +
+                        print(colors["2"] + "       - " + colors["H"] +
                               count + " line(s) of code Total." + colors["R"])
                     elif formatstyle == "COMPATIBLE":
                         print("Benchmark.info.loc_count", count)
@@ -302,7 +296,7 @@ def CLI(input_file="-", kwargs={}):
                     count = str(len(run_program.flat_blocks))
                     shown_msgs["benchmarking_intr"] = True
                     if formatstyle == "DEFAULT":
-                        print(colors["2"] + "       - "+colors["H"] +
+                        print(colors["2"] + "       - " + colors["H"] +
                               count + " blocks(s) Total." + colors["R"])
                     elif formatstyle == "COMPATIBLE":
                         print("Benchmark.info.block_count", count)
@@ -334,7 +328,7 @@ def CLI(input_file="-", kwargs={}):
 
                 if formatstyle == "DEFAULT":
                     graph = GraphvizSource(
-                        run_program.dot_source, filename=tmpdir+"/"+i+".dot", format="png")
+                        run_program.dot_source, filename=tmpdir + "/" + i + ".dot", format="png")
                     graph.view()
                 elif formatstyle == "COMPATIBLE":
                     print("Plugin.dot.begin")
@@ -392,8 +386,7 @@ def BENCHMARK(input_file, kwargs={}):
         colors = kwargs["colors"]
 
     shown_msgs = {}
-    py = os.getenv("WORKSPACE") + os.path.sep + os.getenv("VENV") + \
-        os.path.sep + "Scripts" + os.path.sep + "python"
+    py = "python"
     if formatstyle == "DEFAULT":
         printers.cprint(colors["2"] + "--" + colors["2"] + "== " + colors["2"] +
                         "Benchmarking..." + colors["2"] + " ==" + colors["2"] + "--" + colors["R"], color="" if nocolors else "SUCCESS")
@@ -404,8 +397,8 @@ def BENCHMARK(input_file, kwargs={}):
     sys_argv_.pop(0)
     sys_argv_.append("--benchmark-mods")
     sys_argv_.append(
-        "lengthofcode="+str(benchmarking[1])+","
-        + "iterations="+str(benchmarking[0])+""
+        "lengthofcode=" + str(benchmarking[1]) + "," +
+        "iterations=" + str(benchmarking[0]) + ""
     )
 
     iterations = 0
@@ -416,24 +409,22 @@ def BENCHMARK(input_file, kwargs={}):
         # Open a subprocess for running the wanted command...
         try:
             # Remove the benchmark arguments and pass the rest to the caller.
-            testto = e3lm_parser.parse_args()
-            testto.benchmarking = benchmarking
             strings = sys_argv_
             for string in strings:
                 if string == "-b" or string == "--benchmark":
-                    pos = strings.index(string)+1
-                    if testto.benchmarking[0] != 0:
-                        if testto.benchmarking[0] == strings[pos]:
+                    pos = strings.index(string) + 1
+                    if benchmarking[0] != 0:
+                        if benchmarking[0] == strings[pos]:
                             strings.pop(pos)
                             pos -= 1
-                    if testto.benchmarking[1] != 0:
-                        if testto.benchmarking[1] == strings[pos+1]:
-                            strings.pop(pos+1)
+                    if benchmarking[1] != 0:
+                        if benchmarking[1] == strings[pos + 1]:
+                            strings.pop(pos + 1)
                             pos -= 1
                     strings.remove(string)
                     break
 
-            call = " ".join([pipes.quote(s) for s in strings])
+            call = " ".join([quote(s) for s in strings])
             if verbose_lvl == 3:
                 if "dbg_benchmark_init" not in shown_msgs.keys():
                     print(colors["BLUE"] + "DBG: The call in subprocess is: " +
@@ -510,33 +501,33 @@ def BENCHMARK(input_file, kwargs={}):
         iterations += 1
 
     if formatstyle == "DEFAULT":
-        sys.stdout.write('\r' + 'Total iterations: '+str(iterations)+'\n')
+        sys.stdout.write('\r' + 'Total iterations: ' + str(iterations) + '\n')
     elif formatstyle == "COMPATIBLE":
         sys.stdout.write('Benchmark.info.total_iter ' + str(iterations) + '\n')
     sys.stdout.flush()
 
     if formatstyle == "DEFAULT":
-        [print(str(t["iteration"])+" => "+str(round((t["end"]-t["start"])
-                                                    * 1000, 1000))[:6]+" ms") for t in timelog]
+        [print(str(t["iteration"]) + " => " + str(round((t["end"] - t["start"]) *
+                                                        1000, 1000))[:6] + " ms") for t in timelog]
     elif formatstyle == "COMPATIBLE":
-        [print("Benchmark.info.iter", str(t["iteration"])+" "+str(round((t["end"]-t["start"])
-                                                                        * 1000, 1000))[:6]+" ms") for t in timelog]
+        [print("Benchmark.info.iter", str(t["iteration"]) + " " + str(round((t["end"] - t["start"]) *
+                                                                            1000, 1000))[:6] + " ms") for t in timelog]
 
-    durations = [t["end"]-t["start"] for t in timelog]
+    durations = [t["end"] - t["start"] for t in timelog]
     if formatstyle == "DEFAULT":
-        print(colors["1"]+"Max: " + colors["HEADER"] + str(round((max(durations))
-                                                                 * 1000, 1000))[:6] + colors["1"] + " ms" + colors["R"])
-        print(colors["1"]+"Min: " + colors["HEADER"] + str(round((min(durations))
-                                                                 * 1000, 1000))[:6] + colors["1"] + " ms" + colors["R"])
-        print(colors["1"]+"Avg: " + colors["HEADER"] + str(round((sum(durations) /
-                                                                  iterations) * 1000, 1000))[:6] + colors["1"] + " ms" + colors["R"])
+        print(colors["1"] + "Max: " + colors["HEADER"] + str(round((max(durations)) *
+                                                                   1000, 1000))[:6] + colors["1"] + " ms" + colors["R"])
+        print(colors["1"] + "Min: " + colors["HEADER"] + str(round((min(durations)) *
+                                                                   1000, 1000))[:6] + colors["1"] + " ms" + colors["R"])
+        print(colors["1"] + "Avg: " + colors["HEADER"] + str(round((sum(durations) /
+                                                                    iterations) * 1000, 1000))[:6] + colors["1"] + " ms" + colors["R"])
         printers.cprint(colors["2"] + "--" + colors["2"] + "== " + colors["2"] +
                         "Benchmarking done..." + colors["2"] + " ==" + colors["2"] + "--" + colors["R"] + "\n", color="" if nocolors else "SUCCESS")
     elif formatstyle == "COMPATIBLE":
-        print("Benchmark.info.max", str(round((max(durations))
-                                              * 1000, 1000))[:6])
-        print("Benchmark.info.min", str(round((min(durations))
-                                              * 1000, 1000))[:6])
+        print("Benchmark.info.max", str(round((max(durations)) *
+                                              1000, 1000))[:6])
+        print("Benchmark.info.min", str(round((min(durations)) *
+                                              1000, 1000))[:6])
         print("Benchmark.info.avg", str(round((sum(durations) /
                                                iterations) * 1000, 1000))[:6])
         print("Benchmark.end")
@@ -591,11 +582,11 @@ def main():
                              default="INFO",
                              help='filter output messages (default is INFO)')
 
-    e3lm_parser.add_argument('-i',
-                             '--interactive',
-                             action='store_true',
-                             default=False,
-                             help='execute with interactive mode')
+    # e3lm_parser.add_argument('-i',
+    #                          '--interactive',
+    #                          action='store_true',
+    #                          default=False,
+    #                          help='execute with interactive mode')
 
     e3lm_parser.add_argument('-p',
                              '--plugin',
@@ -670,7 +661,6 @@ def main():
         benchmarking_mods = {b.split('=')[0]: b.split(
             '=')[1] for b in benchmarking_mods}
         benchmarking_mods["enabled"] = True
-
 
     kwargs = {
         "args": args,

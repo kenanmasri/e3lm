@@ -1,5 +1,6 @@
 examples = []
 
+
 def getcode(num, prefix="code"):
     code = globals().get(prefix + str(num), "")
     if code != "":
@@ -7,17 +8,19 @@ def getcode(num, prefix="code"):
     else:
         return None
 
+
 # 0
 code0 = """\
 ; Empty block
 Dummy dummy
 End
 """
-examples.append({"text": code0,
+examples.append({"ind": 0, "text": code0,
                  "lex": {
                      "assert": [
                          ["tokens", ['CLASS', 'END']]
                      ]},
+                 "raises": [],
                  })
 # 1
 code1 = """; Nested empty blocks
@@ -34,7 +37,7 @@ End
 Dummy ;unnamed
 End
 """
-examples.append({"text": code1,
+examples.append({"ind": 1, "text": code1,
                  "lex": {
                      "assert": [
                          ["tokens", ['CLASS', 'END', 'CLASS',
@@ -43,6 +46,7 @@ examples.append({"text": code1,
                                      'CLASS', 'END']],
                      ]},
                  "dot": True,
+                 "raises": [],
                  })
 # 2
 code2 = """Dummy dummy_1
@@ -121,7 +125,7 @@ End
 Object
 End
 """
-examples.append({"text": code2,
+examples.append({"ind": 2, "text": code2,
                  "lex": True,
                  "parse": True,
                  "interpret": {
@@ -131,6 +135,7 @@ examples.append({"text": code2,
                          ["dummy_1_1_2.attr8", "Q2 TQ1"],
                      ]},
                  "json": True,
+                 "raises": [],
                  })
 # 3
 errorcode0 = """\
@@ -141,11 +146,12 @@ Dummy dummy_1_1
    attr2 = 0
 End
 """
-examples.append({"text": errorcode0,
+examples.append({"ind": 0, "text": errorcode0,
                  "lex": {
                      "assert": [
                          ["error", {"class": "IndentationError", "lineno": 4}],
                      ]},
+                 "raises": ["lex", ],
                  })
 # 4
 errorcode1 = """\
@@ -161,12 +167,13 @@ Dummy dummy_2_1
         End
   End
 """
-examples.append({"text": errorcode1,
+examples.append({"ind": 1, "text": errorcode1,
                  "lex": {
                      "assert": [
                          ["error", {"class": "IndentationError", "lineno": 5}],
                      ]},
                  "parse": True,
+                 "raises": ["lex", ],
                  })
 # 5
 errorcode2 = """\
@@ -179,19 +186,23 @@ Dummy dummy_2
      attr = 2
      attr = 2
     ---
-what
+     what
     ---
 End
     End
 End
 """
-examples.append({"text": errorcode2,
-                 "lex": True,
+examples.append({"ind": 2, "text": errorcode2,
+                 "lex": {
+                     "assert": [
+                         ["error", {"class": "SyntaxError", "lineno": 13}],
+                     ]},
                  "parse": {
                      "assert": [
                          ["p_error", {"class": "AttributeError", "lineno": 7}],
                          ["p_error", {"class": "AttributeError", "lineno": 8}],
                      ]},
+                 "raises": ["lex", "parse", ],
                  })
 # 6
 code3 = """\
@@ -221,8 +232,9 @@ End
 
 ; comment?
 """
-examples.append({"text": code3,
+examples.append({"ind": 3, "text": code3,
                  "lex": True,
+                 "raises": [],
                  })
 # 7
 code4 = """\
@@ -240,8 +252,9 @@ Dummy my1
 
 End
 """
-examples.append({"text": code4,
+examples.append({"ind": 4, "text": code4,
                  "lex": True,
+                 "raises": [],
                  })
 # 8
 code5 = """\
@@ -252,10 +265,34 @@ Dummy dummy_1
     attr2_unit = "m"
 End
 """
-examples.append({"text": code5,
+examples.append({"ind": 5, "text": code5,
                  "interpret": True,
                  "units": {
                      "assert": [
                          ["dummy_1.attr1.unit.id", "cm"]
                      ]},
+                 "raises": [],
+                 })
+# 9
+errorcode3 = """\
+Dummy dummy_2
+;comment
+;comment
+;comment
+;comment
+     attr = 1
+     attr = 2
+     attr = 2
+    ---
+     what
+    ---
+End
+"""
+examples.append({"ind": 3, "text": errorcode3,
+                 "parse": {
+                     "assert": [
+                         ["p_error", {"class": "AttributeError", "lineno": 7}],
+                         ["p_error", {"class": "AttributeError", "lineno": 8}],
+                     ]},
+                 "raises": ["parse", ],
                  })

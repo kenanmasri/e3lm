@@ -15,7 +15,7 @@ def test_parser_errors():
         parser.build(debug=1)
         er = None
         try:
-            parsed = parse(d["text"], parser=parser, debug=0)
+            parsed = parse(d["text"], parser=parser, debug=0, tracking=True)
         except (IndentationError, SyntaxError) as e:
             er = e
 
@@ -34,8 +34,8 @@ def test_parser_errors():
                                 assert er.lineno == a[1]["lineno"]
                         else:
                             raise AssertionError(
-                                "Code did not raise {} error."
-                                .format(a[1]["class"])
+                                "Code {} did not raise {} error."
+                                .format(str(i), a[1]["class"])
                             )
                     elif a[0] == "p_error":
                         for i, er in enumerate(parser.errors):

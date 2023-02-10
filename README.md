@@ -49,10 +49,22 @@ E3LM_TEMP_DIRECTORY="tmp"
 
 ## Usage
 
-Basic example:
+### Basic example
+
+You can run these in your terminal to make sure it works:
 
 ```bash
-# Interpret example.3lm file.
+$ e3lm --version
+$ e3lm --help
+$ e3lm -d code0
+$ e3lm -d code0 -p json
+$ e3lm examples/lesson1
+```
+
+More examples:
+
+```bash
+# Interpret an example.3lm file.
 $ e3lm example.3lm
 
 # Interpret demo code1 and generate graphviz dot file and view graph image.
@@ -60,13 +72,6 @@ $ e3lm -d code1 -p dot view
 
 # Benchmarking 20 times the demo code0 for 6 measurements.
 $ e3lm -d code0 -b 6 20
-```
-
-More options:
-
-```bash
-$ e3lm --version
-$ e3lm --help
 ```
 
 ---
@@ -80,13 +85,13 @@ Refer to the [Wiki](https://github.com/kenanmasri/3lm/wiki) to learn the languag
 ## TODO:
 
  - [ ] Examination questions auto-extraction from 3lm files. (Could be a plugin.)
- - [ ] Rewrite included out-of-the-box example codes and error codes.
+ - [x] Rewrite included out-of-the-box example codes and error codes.
  - [ ] Add more tests.
  - [x] Benchmarking.
  - [x] Contrib plugins.
  - [ ] Make publish ready documentation.
  - [ ] Publish to PyPI.
 
-More possibilities... See [e3lm.todo](https://github.com/e3lm/e3lm/blob/master/e3lm.todo)
+More possibilities... See [e3lm.todo](https://github.com/kenanmasri/3lm/blob/master/e3lm.todo)
 
 ---

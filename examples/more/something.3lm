@@ -1,17 +1,26 @@
+; Just a file with some blocks that contain attributes and calculated variables.
+; Things to note:
+; body attribute begins with three dashes and ends with three dashes.
+; 
+; xe is a body modifier
+
 Dummy one
     attr0 = "two.attr5"
     attr5 = """hi i am \n box"""
     attr6 = Dummy.two
+    attr7 = "{{ attr5 }}"
     ---xe
          Hi there bob!
          My first name is {{ attr5 }}
          My name is {{ testvariable }}
-         Lol bye
-           Lol bye
-           Lol bye
-         Lol bye
-            Lol bye
-            Lol byex
+         I start immediately on this line without prior spaces.
+           I start with two prior spaces.
+           I start with two prior spaces.
+         I start with no prior spaces.
+            I start with three prior spaces.
+         The next line will be in Arabic
+         مرحباً بكم في لغة عِلم.
+         Welcome to 3LM language.
     ---
 End
 

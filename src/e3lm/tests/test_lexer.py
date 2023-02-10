@@ -11,14 +11,25 @@ def test_lexer():
     for i, d in enumerate(data.examples):
         if "lex" not in d.keys():
             continue
-        printers.cprint("test_lexer: Code "+str(i))
+
+        with_stmt = False
+        print(d["raises"], i, d["ind"])
+        if "raises" in d.keys():
+            with_stmt = "lex" in d["raises"]
+            print(with_stmt)
+
         lexer.build(debug=0)
         er = None
-        try:
-            lexed = lex(d["text"], lexer=lexer)
+        if with_stmt:
+            with pytest.raises((IndentationError, SyntaxError,)) as e:
+                lexed = lex(d["text"], lexer=lexer,
+                            source=str(i)+":"+str(d["ind"]))
+                toks = [t.type for t in lexed]
+            er = e.value
+        else:
+            lexed = lex(d["text"], lexer=lexer,
+                        source=str(i)+":"+str(d["ind"]))
             toks = [t.type for t in lexed]
-        except (IndentationError, SyntaxError) as e:
-            er = e
 
         if type(d["lex"]) == dict:
             _d = d["lex"]
@@ -34,6 +45,6 @@ def test_lexer():
                                 assert er.lineno == a[1]["lineno"]
                         else:
                             raise AssertionError(
-                                "Code did not raise {} error."
-                                .format(a[1]["class"])
+                                "Code {} did not raise {} error."
+                                .format(str(i), a[1]["class"])
                             )

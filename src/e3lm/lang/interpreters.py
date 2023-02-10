@@ -11,6 +11,7 @@ from e3lm.helpers.printers import cprint
 
 stuck_counter = 0
 
+
 class InterpreterError(BaseException):
     pass
 
@@ -373,7 +374,7 @@ class E3lmInterpreter(NodeVisitor):
         return obj
 
     def v_Attr(self, obj, *args, **kwargs):
-        global stuck_counter # For stack overflow avoidance
+        global stuck_counter  # For stack overflow avoidance
         # --- RETURN BASED ON EVALUATE ---
         evaluate = kwargs["evaluate"]
         if not hasattr(obj, "_lazy"):
