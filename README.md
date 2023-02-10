@@ -25,12 +25,7 @@ Whether you are a scientist, a programmer or an educator, 3LM can be useful for 
 
 ## Installation
 
-> NOTE: Installation does not work right now.. Since the package is not published to PyPI.
-
-### Installation from Github
-```bash
-$ pip install git+https://github.com/kenanmasri/3lm.git#egg=e3lm
-```
+The recommended way to install is using PyPI
 
 ### Installation through PyPI
 Creating a virtual environment is very preferrable.
@@ -38,6 +33,14 @@ Creating a virtual environment is very preferrable.
 ```bash
 $ python -m venv venv
 $ python -m pip install e3lm
+```
+
+### Installation from Github
+
+Not preferrable, but it works too :)
+
+```bash
+$ pip install git+https://github.com/kenanmasri/3lm.git#egg=e3lm
 ```
 
 ## Configuration
