@@ -63,7 +63,7 @@ def parse(text, source=None,
             if "parse_kwargs" in parser_kwargs.keys() else {})
 
     lexer.build(**lexer_kwargs)
-    parser.build(lexer=lexer, **parser_kwargs)
+    parser.build(lexer=lexer, **parse_kwargs)
 
     return parser.parse(text, source, **kwargs)
 

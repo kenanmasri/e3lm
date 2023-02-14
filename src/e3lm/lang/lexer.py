@@ -721,7 +721,7 @@ class E3lmLexer():
             if token and hasattr(token, "type"):
                 result.append(token)
                 if (token.type not in ("NEWLINE", "WS",)):
-                    if echo:
+                    if echo or self.debug:
                         self.print_token(token, cline)
                     cline = token.lineno
             token = self.token()

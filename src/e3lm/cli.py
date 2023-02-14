@@ -30,9 +30,6 @@ import os
 import signal
 import subprocess
 import sys
-import textwrap
-import timeit
-from datetime import datetime
 from shlex import quote
 from time import perf_counter, sleep
 
@@ -46,7 +43,6 @@ from e3lm.helpers.printers import COLORS
 from e3lm.lang.ast import basic_dt
 from e3lm.lang.interpreters import E3lmInterpreter, E3lmPlugin
 from e3lm.utils.lang import get_plugin, interpret, lex, parse
-from e3lm.utils.spin import animate as spinner
 
 # Variables
 
