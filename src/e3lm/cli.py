@@ -152,6 +152,7 @@ def CLI(input_file="-", kwargs={}):
         benchmarking = kwargs["benchmarking"]
         benchmarking_mods = kwargs["benchmarking_mods"]
         colors = kwargs["colors"]
+        e3lm_parser = kwargs["e3lm_parser"]
 
     shown_msgs = {}
     runstack = {}
@@ -420,13 +421,7 @@ def BENCHMARK(input_file, kwargs={}):
                     strings.remove(string)
                     break
 
-            call = " ".join([quote(s) for s in strings])
-            if verbose_lvl == 3:
-                if "dbg_benchmark_init" not in shown_msgs.keys():
-                    print(colors["BLUE"] + "DBG: The call in subprocess is: " +
-                          colors["CYAN"] + "python e3lm.py " + call)
-            p = caller("\"" + py + "\"" + " " + "\"" + os.path.abspath(__file__) +
-                       "\" " + call, _type="subprocess", shell=False, ret=True)
+            p = caller([sys.executable, __file__] + strings, _type="subprocess", shell=False, ret=True)
             pout = os._wrap_close(io.TextIOWrapper(p.stdout), p)
             perr = os._wrap_close(io.TextIOWrapper(p.stderr), p)
 
@@ -493,7 +488,6 @@ def BENCHMARK(input_file, kwargs={}):
             "stderr": read_total_perr,
         })
 
-        shown_msgs["dbg_benchmark_init"] = True
         iterations += 1
 
     if formatstyle == "DEFAULT":
@@ -671,6 +665,7 @@ def main():
         "benchmarking": benchmarking,
         "benchmarking_mods": benchmarking_mods,
         "colors": colors,
+        "e3lm_parser": e3lm_parser,
     }
 
     # --- Check if benchmarking ---
