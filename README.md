@@ -1,6 +1,6 @@
 <img src="https://i.ibb.co/gVczmTW/3LM.png" height="64" width="64" style="vertical-align: middle;"/> &nbsp;&nbsp; <span style="color: orange; font-size: 32px; vertical-align: middle;">3LM</span>
 
-<img src="https://img.shields.io/github/license/kenanmasri/3lm" /> <img src="https://img.shields.io/github/repo-size/kenanmasri/3lm" /> <img src="https://img.shields.io/pypi/v/e3lm" /> 
+<img src="https://img.shields.io/github/license/knno/3lm" /> <img src="https://img.shields.io/github/repo-size/knno/3lm" /> <img src="https://img.shields.io/pypi/v/e3lm" /> 
 
 Have fun while learning!
 
@@ -40,7 +40,7 @@ $ python -m pip install e3lm
 Not preferrable, but it works too :)
 
 ```bash
-$ pip install git+https://github.com/kenanmasri/3lm.git#egg=e3lm
+$ pip install git+https://github.com/knno/3lm.git#egg=e3lm
 ```
 
 ## Configuration
@@ -81,7 +81,7 @@ $ e3lm -d code0 -b 6 20
 
 ## Additional resources
 
-Refer to the [Wiki](https://github.com/kenanmasri/3lm/wiki) to learn the language.
+Refer to the [Wiki](https://github.com/knno/3lm/wiki) to learn the language.
 
 ---
 
@@ -95,6 +95,6 @@ Refer to the [Wiki](https://github.com/kenanmasri/3lm/wiki) to learn the languag
  - [ ] Make publish ready documentation.
  - [ ] Publish to PyPI.
 
-More possibilities... See [e3lm.todo](https://github.com/kenanmasri/3lm/blob/master/e3lm.todo)
+More possibilities... See [e3lm.todo](https://github.com/knno/3lm/blob/master/e3lm.todo)
 
 ---
