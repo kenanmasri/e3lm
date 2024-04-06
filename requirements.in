@@ -9,7 +9,6 @@ docformatter
 graphviz
 iniconfig
 Jinja2
-lxml
 MarkupSafe
 more-itertools
 packaging
@@ -21,7 +20,6 @@ pycodestyle
 pyparsing
 pytest
 python-dotenv
-python-pptx
 six
 toml
 untokenize

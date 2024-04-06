@@ -14,7 +14,6 @@ install_requirements = [
     "colorama",
     "iniconfig",
     "jinja2",
-    "lxml",
     "markupsafe",
     "more-itertools",
     "packaging",
