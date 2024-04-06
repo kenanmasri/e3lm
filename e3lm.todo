@@ -1,0 +1,11 @@
+General:
+    ✔ Rewrite included out-of-the-box example codes and error codes. @done(24-04-06 07:37)
+    - Add more tests.
+    ✔ Benchmarking
+    ✔ Contrib plugins.
+    - Make publish ready documentation.
+    ✔ Publish to PyPI. @done(24-04-06 07:37)
+    
+Plugins:
+    - Examination questions auto-extraction from 3lm files. (Could be a plugin.)
+    - Markdown extraction

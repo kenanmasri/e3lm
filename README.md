@@ -1,4 +1,4 @@
-<img src="https://i.ibb.co/gVczmTW/3LM.png" height="64" width="64" style="vertical-align: middle;"/> &nbsp;&nbsp; <span style="color: orange; font-size: 32px; vertical-align: middle;">3LM</span>
+![3LM](./assets/img/logo.png) &nbsp;&nbsp; <span style="color: orange; font-size: 32px; vertical-align: middle;">3LM</span>
 
 <img src="https://img.shields.io/github/license/knno/3lm" /> <img src="https://img.shields.io/github/repo-size/knno/3lm" /> <img src="https://img.shields.io/pypi/v/e3lm" /> 
 
@@ -19,7 +19,7 @@ Whether you are a scientist, a programmer or an educator, 3LM can be useful for 
 
 ---
 
-<img src="https://i.ibb.co/5WQCkMW/screenshotto.png" alt="screenshotto" border="0">
+![Screenshot](./assets/img/screenshotto.jpg)
 
 ---
 
@@ -84,16 +84,6 @@ $ e3lm -d code0 -b 6 20
 Refer to the [Wiki](https://github.com/knno/3lm/wiki) to learn the language.
 
 ---
-
-## TODO:
-
- - [ ] Examination questions auto-extraction from 3lm files. (Could be a plugin.)
- - [x] Rewrite included out-of-the-box example codes and error codes.
- - [ ] Add more tests.
- - [x] Benchmarking.
- - [x] Contrib plugins.
- - [ ] Make publish ready documentation.
- - [ ] Publish to PyPI.
 
 More possibilities... See [e3lm.todo](https://github.com/knno/3lm/blob/master/e3lm.todo)
 
