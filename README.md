@@ -1,6 +1,8 @@
 ![3LM](./assets/img/logo.png) &nbsp;&nbsp; <span style="color: orange; font-size: 32px; vertical-align: middle;">3LM</span>
 
 <img src="https://img.shields.io/github/license/knno/3lm" /> <img src="https://img.shields.io/github/repo-size/knno/3lm" /> <img src="https://img.shields.io/pypi/v/e3lm" /> 
+[![Downloads](https://static.pepy.tech/personalized-badge/e3lm?period=total&units=abbreviation&left_color=grey&right_color=blue&left_text=Downloads)]()
+
 
 Have fun while learning!
 
